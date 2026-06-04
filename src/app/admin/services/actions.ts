@@ -22,7 +22,7 @@ export async function upsertService(formData: FormData) {
     description: formData.get('description') as string,
     descriptionAr: (formData.get('descriptionAr') as string) || null,
     icon: (formData.get('icon') as string) || null,
-    active: formData.get('active') !== 'false',
+    active: formData.get('active') === 'true',
     updatedAt: new Date(),
   };
 

@@ -3,6 +3,7 @@
 import { useTransition, useState } from 'react';
 import { updateBookingProfile, BookingProfile } from './actions';
 import s from '../Scheduling.module.css';
+import ImageUploadField from '@/components/admin/ImageUploadField';
 
 const TIMEZONES = ['Africa/Cairo', 'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Tokyo', 'Australia/Sydney'];
 const DATE_FORMATS = ['MMM d, yyyy', 'dd/MM/yyyy', 'MM/dd/yyyy', 'yyyy-MM-dd', 'd MMMM yyyy'];
@@ -40,10 +41,14 @@ export default function ProfileForm({ profile }: { profile: BookingProfile }) {
                             <textarea name="welcome_message" defaultValue={profile.welcome_message} className={s.textarea} rows={3} placeholder="Tell invitees about yourself..." />
                         </div>
                         <div className={s.inputGroup}>
-                            <label className={s.label}>Avatar URL</label>
-                            <input name="avatar_url" defaultValue={profile.avatar_url} className={s.input} placeholder="/avatar.jpg or https://..." />
+                            <ImageUploadField
+                                name="avatar_url"
+                                label="Avatar"
+                                defaultValue={profile.avatar_url}
+                                placeholder="/avatar.jpg or https://..."
+                            />
                             <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)', marginTop: '0.25rem' }}>
-                                Place your photo in <code>public/avatar.jpg</code> or use a full URL
+                                Upload directly or use a full URL.
                             </div>
                         </div>
                     </div>

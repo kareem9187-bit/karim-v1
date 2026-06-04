@@ -30,7 +30,7 @@ export async function upsertStoryChapter(formData: FormData) {
     imageBadgeAr: (formData.get('imageBadgeAr') as string) || null,
     stats: JSON.parse((formData.get('stats') as string) || '[]'),
     reversed: formData.get('reversed') === 'true',
-    active: formData.get('active') !== 'false',
+    active: formData.get('active') === 'true',
     updatedAt: new Date(),
   };
 
@@ -40,6 +40,7 @@ export async function upsertStoryChapter(formData: FormData) {
     await db.insert(storyChapters).values(data);
   }
 
+  revalidatePath('/');
   revalidatePath('/about');
   revalidatePath('/admin/about');
   return { success: true };
@@ -47,6 +48,7 @@ export async function upsertStoryChapter(formData: FormData) {
 
 export async function deleteStoryChapter(id: string) {
   await db.delete(storyChapters).where(eq(storyChapters.id, id));
+  revalidatePath('/');
   revalidatePath('/about');
   revalidatePath('/admin/about');
   return { success: true };
@@ -58,6 +60,7 @@ export async function reorderStoryChapters(ids: string[]) {
       db.update(storyChapters).set({ order: index + 1 }).where(eq(storyChapters.id, id))
     )
   );
+  revalidatePath('/');
   revalidatePath('/about');
   return { success: true };
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useTransition, useState, useEffect } from 'react';
-import { updateAvailabilityState, saveOverride, deleteOverride } from './actions';
+import { saveWeeklyAvailability, addOverride, deleteOverride } from './actions';
 import s from '../Scheduling.module.css';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -35,9 +35,12 @@ export default function AvailabilityForm({ availabilities, overrides: initialOve
         e.preventDefault();
         startTransition(async () => {
             const clean: ScheduleState = {};
-            for (const [d, slots] of Object.entries(schedule))
+            for (const [d, slots] of Object.entries(schedule)) {
                 clean[parseInt(d)] = slots.filter(sl => sl.start && sl.end);
-            const r = await updateAvailabilityState(JSON.stringify(clean));
+            }
+            const formData = new FormData();
+            formData.append('payload', JSON.stringify(clean));
+            const r = await saveWeeklyAvailability(formData);
             if (r?.error) alert('Error: ' + r.error);
             else alert('Availability saved!');
         });
@@ -63,7 +66,10 @@ export default function AvailabilityForm({ availabilities, overrides: initialOve
         if (!newOverrideDate) return;
         startTransition(async () => {
             const validSlots = newOverrideSlots.filter(sl => sl.start && sl.end);
-            const r = await saveOverride(newOverrideDate, validSlots);
+            const formData = new FormData();
+            formData.append('date', newOverrideDate);
+            formData.append('slots', JSON.stringify(validSlots));
+            const r = await addOverride(formData);
             if (r?.error) alert(r.error);
             else {
                 setOverrides(p => [...p.filter(o => o.date !== newOverrideDate), { id: '', date: newOverrideDate, slots: validSlots }]);

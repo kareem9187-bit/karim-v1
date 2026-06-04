@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button, Card, Input, Modal, Switch, Table } from "@heroui/react";
+import { Button, Card, Input, Modal, Switch, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { getBrands, upsertBrand, deleteBrand } from './actions';
 import toast from 'react-hot-toast';
+import ImageUploadField from '@/components/admin/ImageUploadField';
 
 export default function BrandsAdminPage() {
   const [brands, setBrands] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingBrand, setEditingBrand] = useState<any | null>(null);
-  
+
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -48,9 +49,9 @@ export default function BrandsAdminPage() {
     if (editingBrand?.id) {
       formData.append('id', editingBrand.id);
     }
-    
+
     const res = await upsertBrand(formData);
-    
+
     if (!res || !res.success) {
       toast.error('Failed to save brand');
     } else {
@@ -61,7 +62,7 @@ export default function BrandsAdminPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto text-white">
+    <div className="max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Trusted Brands</h1>
         <Button onPress={handleAddNew} className="bg-blue-600">
@@ -76,23 +77,21 @@ export default function BrandsAdminPage() {
               No records found.
             </div>
           ) : (
-            <Table 
-            aria-label="Brands" 
-            
-          >
-            <Table.Header>
-              <Table.Column>ORDER</Table.Column>
-              <Table.Column>NAME</Table.Column>
-              <Table.Column>LOGO</Table.Column>
-              <Table.Column>STATUS</Table.Column>
-              <Table.Column >ACTIONS</Table.Column>
-            </Table.Header>
-            <Table.Body items={brands}>
+            <Table>
+              <Table.Content aria-label="Brands">
+            <TableHeader>
+              <TableColumn>ORDER</TableColumn>
+              <TableColumn>NAME</TableColumn>
+              <TableColumn>LOGO</TableColumn>
+              <TableColumn>STATUS</TableColumn>
+              <TableColumn >ACTIONS</TableColumn>
+            </TableHeader>
+            <TableBody items={brands}>
               {(item: any) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell>{item.order}</Table.Cell>
-                  <Table.Cell className="font-medium">{item.name}</Table.Cell>
-                  <Table.Cell>
+                <TableRow key={item.id}>
+                  <TableCell>{item.order}</TableCell>
+                  <TableCell className="font-medium">{item.name}</TableCell>
+                  <TableCell>
                     {item.logo ? (
                       <div className="w-12 h-12 bg-[rgba(255,255,255,0.05)] rounded flex items-center justify-center">
                         <img src={item.logo} alt={item.name} className="max-w-full max-h-full object-contain p-1" />
@@ -100,22 +99,23 @@ export default function BrandsAdminPage() {
                     ) : (
                       <span className="text-xs text-gray-500">No logo</span>
                     )}
-                  </Table.Cell>
-                  <Table.Cell>
+                  </TableCell>
+                  <TableCell>
                     <span className={`px-2 py-1 rounded-full text-xs ${item.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
                       {item.active ? 'Active' : 'Inactive'}
                     </span>
-                  </Table.Cell>
-                  <Table.Cell>
+                  </TableCell>
+                  <TableCell>
                     <div className="flex justify-center gap-2">
                       <Button size="sm" variant="secondary" onPress={() => handleEdit(item)}>Edit</Button>
                       <Button size="sm" variant="secondary" onPress={() => handleDelete(item.id)}>Delete</Button>
                     </div>
-                  </Table.Cell>
-                </Table.Row>
+                  </TableCell>
+                </TableRow>
               )}
-            </Table.Body>
-          </Table>
+            </TableBody>
+              </Table.Content>
+            </Table>
           )}
         </Card.Content>
       </Card>
@@ -123,52 +123,50 @@ export default function BrandsAdminPage() {
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}  >
         <Modal.Dialog>
           {({ close: onClose }: any) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-8">
               <Modal.Header>{editingBrand ? 'Edit Brand' : 'Add New Brand'}</Modal.Header>
               <Modal.Body className="py-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Order</label><Input 
-                    name="order" 
-                     
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Order</label><Input
+                    name="order"
+
                     type="number"
-                    defaultValue={editingBrand?.order || 0} 
-                    required 
+                    defaultValue={editingBrand?.order || 0}
+                    required
                     variant="secondary"
-                    
+
                    /></div>
                   <div className="flex items-center px-2">
                     <Switch name="active" defaultSelected={editingBrand?.active !== false} value="true">
                       Active
                     </Switch>
                   </div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Brand Name</label><Input 
-                    name="name" 
-                     
-                    defaultValue={editingBrand?.name} 
-                    required 
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Brand Name</label><Input
+                    name="name"
+
+                    defaultValue={editingBrand?.name}
+                    required
                     className="md:col-span-2"
                     variant="secondary"
-                    
+
                    /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Logo URL</label><Input 
-                    name="logo" 
-                     
-                    defaultValue={editingBrand?.logo} 
-                    className="md:col-span-2"
-                    variant="secondary"
-                    
-                   /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">CSS Style (optional)</label><Input 
-                    name="style" 
-                     
+
+                  <ImageUploadField
+                    name="logo"
+                    label="Logo"
+                    defaultValue={editingBrand?.logo}
+                    className="mb-2 md:col-span-2"
+                  />
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">CSS Style (optional)</label><Input
+                    name="style"
+
                     placeholder="e.g. filter: invert(1)"
-                    defaultValue={editingBrand?.style} 
+                    defaultValue={editingBrand?.style}
                     className="md:col-span-2"
                     variant="secondary"
-                    
+
                    /></div>
                 </div>
               </Modal.Body>

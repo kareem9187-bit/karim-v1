@@ -5,23 +5,18 @@ export async function GET() {
 
     // 1. Test Google Calendar
     try {
-        const { getAuthenticatedCalendar } = await import('@/utils/google');
-        const calendar = await getAuthenticatedCalendar();
-        if (!calendar) {
-            results.google = { status: 'FAIL', error: 'Not authenticated - no tokens' };
-        } else {
-            // Try listing 1 event to verify auth works
-            const events = await calendar.events.list({
-                calendarId: 'primary',
-                maxResults: 1,
-                timeMin: new Date().toISOString(),
-            });
-            results.google = {
-                status: 'OK',
-                calendarAccess: true,
-                nextEvent: events.data.items?.[0]?.summary || 'No upcoming events',
-            };
-        }
+        const { getCalendarClient } = await import('@/utils/google-calendar');
+        const calendar = await getCalendarClient();
+        const events = await calendar.events.list({
+            calendarId: 'primary',
+            maxResults: 1,
+            timeMin: new Date().toISOString(),
+        });
+        results.google = {
+            status: 'OK',
+            calendarAccess: true,
+            nextEvent: events.data.items?.[0]?.summary || 'No upcoming events',
+        };
     } catch (e: any) {
         results.google = { status: 'ERROR', error: e.message, code: e.code };
     }

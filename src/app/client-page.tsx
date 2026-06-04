@@ -3,7 +3,56 @@
 import { SpaNavbar } from '@/components/public/SpaNavbar';
 import { useEffect } from 'react';
 
-export default function ClientPage({ 
+const getServiceIcon = (icon: string) => {
+  switch (icon) {
+    case 'editing':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>;
+    case 'cinematography':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>;
+    case 'social':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>;
+    case 'documentary':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>;
+    case 'mentorship':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="8" r="4"/><path d="M4 20v-2a8 8 0 0 1 16 0v2"/></svg>;
+    case 'motion':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>;
+    default:
+      return null;
+  }
+};
+
+const getProcessIcon = (icon: string) => {
+  switch (icon) {
+    case 'discovery':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>;
+    case 'proposal':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>;
+    case 'production':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>;
+    case 'delivery':
+      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+    default:
+      return null;
+  }
+};
+
+const getSocialIcon = (platform: string) => {
+  switch (platform.toLowerCase()) {
+    case 'instagram':
+      return <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>;
+    case 'tiktok':
+      return <svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>;
+    case 'linkedin':
+      return <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>;
+    case 'youtube':
+      return <svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>;
+    default:
+      return null;
+  }
+};
+
+export default function ClientPage({
   heroData,
   servicesData,
   statsData,
@@ -16,8 +65,10 @@ export default function ClientPage({
   countriesData,
   faqsData,
   socialData,
-  worksData
-}: { 
+  worksData,
+  welcomeChaptersData,
+  contactData
+}: {
   heroData: any,
   servicesData: any[],
   statsData: any[],
@@ -30,13 +81,71 @@ export default function ClientPage({
   countriesData: any[],
   faqsData: any[],
   socialData: any[],
-  worksData?: any[]
+  worksData?: any[],
+  welcomeChaptersData?: any[],
+  contactData?: any
 }) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       (window as any).__WORKS_DATA__ = worksData;
+      (window as any).__TESTIMONIALS_DATA__ = (testimonialsData || []).map((t: any) => ({
+        name: t.name,
+        name_ar: t.nameAr,
+        role: t.role,
+        role_ar: t.roleAr,
+        stars: t.rating ?? 5,
+        initials: t.name ? t.name.split(' ').map((n: string) => n[0]).join('').toUpperCase() : 'C',
+        text: t.text,
+        text_ar: t.textAr,
+        row: t.row
+      }));
+      (window as any).__COUNTRIES_DATA__ = countriesData;
     }
-  }, [worksData]);
+  }, [worksData, testimonialsData, countriesData]);
+
+  const profileImage = heroData?.image || '/images/karim.jpg';
+  const displayName = heroData?.name || 'Karim Abdelaziz';
+  const displayNameAr = heroData?.nameAr || 'كريم عبدالعزيز';
+  const [firstName, ...restName] = displayName.split(' ');
+  const lastName = restName.join(' ') || 'Abdelaziz';
+  const heroPrimaryText = heroData?.ctaPrimaryText || 'Book a Free Discovery Call';
+  const heroPrimaryTextAr = heroData?.ctaPrimaryTextAr || 'احجز جلسة استكشاف مجانية';
+  const heroPrimaryLink = heroData?.ctaPrimaryLink || '#';
+  const heroSecondaryText = heroData?.ctaSecondaryText || 'See My Work';
+  const heroSecondaryTextAr = heroData?.ctaSecondaryTextAr || 'شاهد أعمالي';
+  const heroSecondaryLink = heroData?.ctaSecondaryLink || '#services';
+  const splitCopy = (value: string) => value.split(/\n+/).map((part) => part.trim()).filter(Boolean);
+  const fallbackTrainingDescription = [
+    'Learn from a working professional.',
+    'Focused, practical training for aspiring editors and videographers who want real-world skills - not textbook theory.',
+    "Whether you're starting out or trying to break into professional work, my mentorship is built around your specific goals.",
+  ].join('\n');
+  const fallbackTrainingDescriptionAr = [
+    'تعلم من محترف يمارس المجال',
+    'تدريب عملي ومركز للمونتيرز والمصورين الطامحين اللي عايزين مهارات حقيقية - مش نظريات.',
+    'سواء بتبدأ أو بتحاول تدخل المجال الاحترافي، الإرشاد بتاعي مصمم حوالين أهدافك الخاصة.',
+  ].join('\n');
+  const trainingDescriptionParts = splitCopy(trainingData?.description || fallbackTrainingDescription);
+  const trainingDescriptionArParts = splitCopy(trainingData?.descriptionAr || fallbackTrainingDescriptionAr);
+
+  const handleDynamicLink = (e: any, link?: string | null, fallbackSection?: string) => {
+    const target = link?.trim();
+    if (!target || target === '#') {
+      e.preventDefault();
+      if (typeof window !== 'undefined' && (window as any).qbOpen) {
+        (window as any).qbOpen();
+      }
+      return;
+    }
+
+    if (target.startsWith('#')) {
+      e.preventDefault();
+      const section = target.slice(1) || fallbackSection;
+      if (typeof window !== 'undefined' && section && (window as any).spaGo) {
+        (window as any).spaGo(section);
+      }
+    }
+  };
 
   return (
     <main>
@@ -44,10 +153,10 @@ export default function ClientPage({
 <div id="pageLoader" className="page-loader">
   <div className="loader-inner">
     <div className="loader-logo">
-      <img src="/images/karim.jpg" id="loaderPhotoBase" className="loader-photo-base" alt="Karim" />
-      <img src="/images/karim.jpg" id="loaderPhotoColor" className="loader-photo-color" alt="Karim" />
+      <img src={profileImage} id="loaderPhotoBase" className="loader-photo-base" alt={displayName} />
+      <img src={profileImage} id="loaderPhotoColor" className="loader-photo-color" alt={displayName} />
     </div>
-    <div className="loader-name">Karim Abdelaziz</div>
+    <div className="loader-name">{displayName}</div>
     <div className="loader-bar"><div className="loader-bar-fill" id="loaderBarFill"></div></div>
     <div className="loader-percentage" id="loaderPercentage">0%</div>
   </div>
@@ -82,105 +191,56 @@ export default function ClientPage({
   {/* Stage */}
   <div className="stage" id="stage">
 
-    {/* Chapter 0 — INTRO */}
-    <div className="chapter chapter-intro active" data-chapter="0">
-      <div className="chapter-inner">
-        <div className="intro-logo">
-          <img src="/images/karim.jpg" alt="Karim" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
-        </div>
-        <h1 className="intro-title" data-en='<strong>Karim</strong> Abdelaziz' data-ar='<strong>كريم</strong> عبدالعزيز'><strong>Karim</strong> Abdelaziz</h1>
-        <p className="intro-sub" data-en="A story told in numbers" data-ar="قصة تُروى بالأرقام">A story told in numbers</p>
-      </div>
-    </div>
+    {(welcomeChaptersData || []).map((chap: any, idx: number) => {
+      if (chap.isIntro) {
+        return (
+          <div key={chap.id || idx} className="chapter chapter-intro active" data-chapter="0">
+            <div className="chapter-inner">
+              <div className="intro-logo">
+                <img src={profileImage} alt={displayName} style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+              </div>
+              <h1 className="intro-title" data-en={chap.phrase} data-ar={chap.phraseAr} dangerouslySetInnerHTML={{ __html: chap.phrase }}></h1>
+              <p className="intro-sub" data-en={chap.subText} data-ar={chap.subTextAr}>{chap.subText}</p>
+            </div>
+          </div>
+        );
+      }
 
-    {/* Chapter 1 — 8 YEARS */}
-    <div className="chapter" data-chapter="1">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 01 · The Beginning" data-ar="الفصل ٠١ · البداية">Chapter 01 · The Beginning</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="8">0</span><span className="num-suffix" data-en="years" data-ar="سنوات">years</span></div>
-        <p className="chap-phrase" data-en='It started with a <em>borrowed camera</em> and a story to tell.' data-ar='بدأت بـ<em>كاميرا مستعارة</em> وقصة لأرويها.'>It started with a <em>borrowed camera</em> and a story to tell.</p>
-        <div className="chap-sub" data-en="2017 — Cairo" data-ar="٢٠١٧ — القاهرة">2017 — Cairo</div>
-      </div>
-    </div>
+      if (chap.isFinal) {
+        return (
+          <div key={chap.id || idx} className="chapter chapter-final" data-chapter={chap.order}>
+            <div className="chap-glow"></div>
+            <div className="chapter-inner">
+              <div className="chap-label">
+                <div className="chap-label-line"></div>
+                <span data-en={chap.label} data-ar={chap.labelAr}>{chap.label}</span>
+                <div className="chap-label-line"></div>
+              </div>
+              <h2 className="final-title" data-en={chap.phrase} data-ar={chap.phraseAr} dangerouslySetInnerHTML={{ __html: chap.phrase }}></h2>
+            </div>
+          </div>
+        );
+      }
 
-    {/* Chapter 2 — 1,318 PROJECTS */}
-    <div className="chapter" data-chapter="2">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 02 · The Craft" data-ar="الفصل ٠٢ · الحرفة">Chapter 02 · The Craft</span>
-          <div className="chap-label-line"></div>
+      return (
+        <div key={chap.id || idx} className="chapter" data-chapter={chap.order}>
+          <div className="chap-glow"></div>
+          <div className="chapter-inner">
+            <div className="chap-label">
+              <div className="chap-label-line"></div>
+              <span data-en={chap.label} data-ar={chap.labelAr}>{chap.label}</span>
+              <div className="chap-label-line"></div>
+            </div>
+            <div className="chap-number">
+              <span className="num-counter" data-target={chap.number}>{chap.number}</span>
+              {chap.suffix && <span className="num-suffix" data-en={chap.suffix} data-ar={chap.suffixAr || chap.suffix}>{chap.suffix}</span>}
+            </div>
+            <p className="chap-phrase" data-en={chap.phrase} data-ar={chap.phraseAr} dangerouslySetInnerHTML={{ __html: chap.phrase }}></p>
+            {chap.subText && <div className="chap-sub" data-en={chap.subText} data-ar={chap.subTextAr || chap.subText}>{chap.subText}</div>}
+          </div>
         </div>
-        <div className="chap-number"><span className="num-counter" data-target="1318">0</span><span className="num-suffix">+</span></div>
-        <p className="chap-phrase" data-en='<strong>Projects shipped.</strong> Each one a chance to get a little sharper.' data-ar='<strong>مشروع منجز.</strong> كل واحد فرصة لأصبح أكثر دقة.'><strong>Projects shipped.</strong> Each one a chance to get a little sharper.</p>
-        <div className="chap-sub" data-en="From reels to feature films" data-ar="من الريلز للأفلام الطويلة">From reels to feature films</div>
-      </div>
-    </div>
-
-    {/* Chapter 3 — 470 CLIENTS */}
-    <div className="chapter" data-chapter="3">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 03 · The Trust" data-ar="الفصل ٠٣ · الثقة">Chapter 03 · The Trust</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="470">0</span><span className="num-suffix">+</span></div>
-        <p className="chap-phrase" data-en='<strong>Clients</strong> who came back. <em>Trust is earned frame by frame.</em>' data-ar='<strong>عميل</strong> رجعوا تاني. <em>الثقة تُكتسب لقطة بلقطة.</em>'><strong>Clients</strong> who came back. <em>Trust is earned frame by frame.</em></p>
-        <div className="chap-sub" data-en="Samsung · CUPRA · 9GAG · Artlist · Asus" data-ar="Samsung · CUPRA · 9GAG · Artlist · Asus">Samsung · CUPRA · 9GAG · Artlist · Asus</div>
-      </div>
-    </div>
-
-    {/* Chapter 4 — 14 COUNTRIES */}
-    <div className="chapter" data-chapter="4">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 04 · The Reach" data-ar="الفصل ٠٤ · المدى">Chapter 04 · The Reach</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="14">0</span><span className="num-suffix" data-en="countries" data-ar="دولة">countries</span></div>
-        <p className="chap-phrase" data-en='From Cairo, the work travels. <em>Egypt, the Gulf, Europe — and beyond.</em>' data-ar='من القاهرة، الشغل بيسافر. <em>مصر، الخليج، أوروبا — وأبعد.</em>'>From Cairo, the work travels. <em>Egypt, the Gulf, Europe — and beyond.</em></p>
-        <div className="chap-sub" data-en="One studio · Global reach" data-ar="استوديو واحد · انتشار عالمي">One studio · Global reach</div>
-      </div>
-    </div>
-
-    {/* Chapter 5 — 200+ STUDENTS */}
-    <div className="chapter" data-chapter="5">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 05 · The Giveback" data-ar="الفصل ٠٥ · العطاء">Chapter 05 · The Giveback</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="200">0</span><span className="num-suffix">+</span></div>
-        <p className="chap-phrase" data-en='<strong>Editors mentored.</strong> The craft only grows when you <em>pass it on.</em>' data-ar='<strong>مونتير اتدرّب.</strong> الحرفة بتكبر لما <em>تنقلها لغيرك.</em>'><strong>Editors mentored.</strong> The craft only grows when you <em>pass it on.</em></p>
-        <div className="chap-sub" data-en="Cairo · Riyadh · Online — worldwide" data-ar="القاهرة · الرياض · أونلاين — عالمياً">Cairo · Riyadh · Online — worldwide</div>
-      </div>
-    </div>
-
-    {/* Chapter 6 — FINAL CTA */}
-    <div className="chapter chapter-final" data-chapter="6">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="One More Number" data-ar="رقم أخير">One More Number</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <h2 className="final-title" data-en='The next one is <em>yours.</em>' data-ar='الرقم القادم <em>ليك.</em>'>The next one is <em>yours.</em></h2>
-
-      </div>
-    </div>
+      );
+    })}
 
   </div>
 </div>
@@ -189,174 +249,9 @@ export default function ClientPage({
 <div className="top-bar">
   <div className="brand-mark">
     <div className="brand-mark-logo">
-      <img src="/images/karim.jpg" alt="Karim" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
+      <img src={profileImage} alt={displayName} style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
     </div>
-    <span data-en="Karim Abdelaziz" data-ar="كريم عبدالعزيز">Karim Abdelaziz</span>
-  </div>
-  <div className="top-actions flex flex-col md:flex-row gap-4">
-    <button className="lang-btn" id="langBtn">العربية</button>
-  </div>
-</div>
-
-{/* Large floating skip button (always visible during welcome) */}
-<button className="skip-btn-floating" onClick={() => { if(typeof window !== "undefined" && (window as any).enterSite) { (window as any).enterSite() } } } id="welcomeSkipBtn">
-  <span data-en="Skip to Portfolio" data-ar="تخطي للمعرض">Skip to Portfolio</span>
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-</button>
-
-{/* Progress Rail (vertical line on left) */}
-<div className="progress-rail">
-  <div className="rail-track">
-    <div className="rail-fill" id="railFill"></div>
-    <div className="loader-logo">
-      <img src="/images/karim.jpg" id="loaderPhotoBase" className="loader-photo-base" alt="Karim" />
-      <img src="/images/karim.jpg" id="loaderPhotoColor" className="loader-photo-color" alt="Karim" />
-    </div>
-    <div className="loader-name">Karim Abdelaziz</div>
-    <div className="loader-bar"><div className="loader-bar-fill" id="loaderBarFill"></div></div>
-    <div className="loader-percentage" id="loaderPercentage">0%</div>
-  </div>
-</div>
-
-{/* ══════════════════ PAGE TRANSITION OVERLAY ══════════════════ */}
-<div className="page-transition" id="pageTransition">
-  <div className="page-transition-panel"></div>
-  <div className="page-transition-panel"></div>
-  <div className="page-transition-panel"></div>
-</div>
-
-{/* ══════════════════ WELCOME SECTION ══════════════════ */}
-<div id="welcome-section">
-
-
-{/* Scroll track (gives scrollable length) */}
-<div className="scroll-track"></div>
-
-{/* Fixed viewport where everything renders */}
-<div className="viewport">
-  {/* Atmosphere */}
-  <div className="orb orb1"></div>
-  <div className="orb orb2"></div>
-  <div className="orb orb3"></div>
-
-  {/* Photo reveal layer */}
-  <div className="photo-reveal" id="photoReveal">
-    <div className="photo-reveal-img" id="photoRevealImg"></div>
-  </div>
-
-  {/* Stage */}
-  <div className="stage" id="stage">
-
-    {/* Chapter 0 — INTRO */}
-    <div className="chapter chapter-intro active" data-chapter="0">
-      <div className="chapter-inner">
-        <div className="intro-logo">
-          <img src="/images/karim.jpg" alt="Karim" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
-        </div>
-        <h1 className="intro-title" data-en='<strong>Karim</strong> Abdelaziz' data-ar='<strong>كريم</strong> عبدالعزيز'><strong>Karim</strong> Abdelaziz</h1>
-        <p className="intro-sub" data-en="A story told in numbers" data-ar="قصة تُروى بالأرقام">A story told in numbers</p>
-      </div>
-    </div>
-
-    {/* Chapter 1 — 8 YEARS */}
-    <div className="chapter" data-chapter="1">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 01 · The Beginning" data-ar="الفصل ٠١ · البداية">Chapter 01 · The Beginning</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="8">0</span><span className="num-suffix" data-en="years" data-ar="سنوات">years</span></div>
-        <p className="chap-phrase" data-en='It started with a <em>borrowed camera</em> and a story to tell.' data-ar='بدأت بـ<em>كاميرا مستعارة</em> وقصة لأرويها.'>It started with a <em>borrowed camera</em> and a story to tell.</p>
-        <div className="chap-sub" data-en="2017 — Cairo" data-ar="٢٠١٧ — القاهرة">2017 — Cairo</div>
-      </div>
-    </div>
-
-    {/* Chapter 2 — 1,318 PROJECTS */}
-    <div className="chapter" data-chapter="2">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 02 · The Craft" data-ar="الفصل ٠٢ · الحرفة">Chapter 02 · The Craft</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="1318">0</span><span className="num-suffix">+</span></div>
-        <p className="chap-phrase" data-en='<strong>Projects shipped.</strong> Each one a chance to get a little sharper.' data-ar='<strong>مشروع منجز.</strong> كل واحد فرصة لأصبح أكثر دقة.'><strong>Projects shipped.</strong> Each one a chance to get a little sharper.</p>
-        <div className="chap-sub" data-en="From reels to feature films" data-ar="من الريلز للأفلام الطويلة">From reels to feature films</div>
-      </div>
-    </div>
-
-    {/* Chapter 3 — 470 CLIENTS */}
-    <div className="chapter" data-chapter="3">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 03 · The Trust" data-ar="الفصل ٠٣ · الثقة">Chapter 03 · The Trust</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="470">0</span><span className="num-suffix">+</span></div>
-        <p className="chap-phrase" data-en='<strong>Clients</strong> who came back. <em>Trust is earned frame by frame.</em>' data-ar='<strong>عميل</strong> رجعوا تاني. <em>الثقة تُكتسب لقطة بلقطة.</em>'><strong>Clients</strong> who came back. <em>Trust is earned frame by frame.</em></p>
-        <div className="chap-sub" data-en="Samsung · CUPRA · 9GAG · Artlist · Asus" data-ar="Samsung · CUPRA · 9GAG · Artlist · Asus">Samsung · CUPRA · 9GAG · Artlist · Asus</div>
-      </div>
-    </div>
-
-    {/* Chapter 4 — 14 COUNTRIES */}
-    <div className="chapter" data-chapter="4">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 04 · The Reach" data-ar="الفصل ٠٤ · المدى">Chapter 04 · The Reach</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="14">0</span><span className="num-suffix" data-en="countries" data-ar="دولة">countries</span></div>
-        <p className="chap-phrase" data-en='From Cairo, the work travels. <em>Egypt, the Gulf, Europe — and beyond.</em>' data-ar='من القاهرة، الشغل بيسافر. <em>مصر، الخليج، أوروبا — وأبعد.</em>'>From Cairo, the work travels. <em>Egypt, the Gulf, Europe — and beyond.</em></p>
-        <div className="chap-sub" data-en="One studio · Global reach" data-ar="استوديو واحد · انتشار عالمي">One studio · Global reach</div>
-      </div>
-    </div>
-
-    {/* Chapter 5 — 200+ STUDENTS */}
-    <div className="chapter" data-chapter="5">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="Chapter 05 · The Giveback" data-ar="الفصل ٠٥ · العطاء">Chapter 05 · The Giveback</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <div className="chap-number"><span className="num-counter" data-target="200">0</span><span className="num-suffix">+</span></div>
-        <p className="chap-phrase" data-en='<strong>Editors mentored.</strong> The craft only grows when you <em>pass it on.</em>' data-ar='<strong>مونتير اتدرّب.</strong> الحرفة بتكبر لما <em>تنقلها لغيرك.</em>'><strong>Editors mentored.</strong> The craft only grows when you <em>pass it on.</em></p>
-        <div className="chap-sub" data-en="Cairo · Riyadh · Online — worldwide" data-ar="القاهرة · الرياض · أونلاين — عالمياً">Cairo · Riyadh · Online — worldwide</div>
-      </div>
-    </div>
-
-    {/* Chapter 6 — FINAL CTA */}
-    <div className="chapter chapter-final" data-chapter="6">
-      <div className="chap-glow"></div>
-      <div className="chapter-inner">
-        <div className="chap-label">
-          <div className="chap-label-line"></div>
-          <span data-en="One More Number" data-ar="رقم أخير">One More Number</span>
-          <div className="chap-label-line"></div>
-        </div>
-        <h2 className="final-title" data-en='The next one is <em>yours.</em>' data-ar='الرقم القادم <em>ليك.</em>'>The next one is <em>yours.</em></h2>
-
-      </div>
-    </div>
-
-  </div>
-</div>
-
-{/* Top Bar */}
-<div className="top-bar">
-  <div className="brand-mark">
-    <div className="brand-mark-logo">
-      <img src="/images/karim.jpg" alt="Karim" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
-    </div>
-    <span data-en="Karim Abdelaziz" data-ar="كريم عبدالعزيز">Karim Abdelaziz</span>
+    <span data-en={displayName} data-ar={displayNameAr}>{displayName}</span>
   </div>
   <div className="top-actions flex flex-col md:flex-row gap-4">
     <button className="lang-btn" id="langBtn">العربية</button>
@@ -414,21 +309,25 @@ export default function ClientPage({
   <div className="hero-content">
     <div className="hero-greet" data-en={heroData?.greeting || "Hi I'm"} data-ar={heroData?.greetingAr || "أهلاً، أنا"}>{heroData?.greeting || "Hi I'm"}</div>
     <h1 className="hero-name" data-en-only="true">
-      <span style={{ display: 'block' }}>{heroData?.name ? heroData.name.split(' ')[0] : 'Karim'}</span>
-      <span style={{ display: 'block' }}>{heroData?.name ? heroData.name.split(' ').slice(1).join(' ') : 'Abdelaziz'}</span>
+      <span style={{ display: 'block' }}>{firstName}</span>
+      <span style={{ display: 'block' }}>{lastName}</span>
     </h1>
     <h1 className="hero-name" data-ar-only="true" style={{ display: 'none' }}>
       {heroData?.nameAr || 'كريم عبدالعزيز'}
     </h1>
-    <p 
-      className="hero-tagline" 
-      data-en={heroData?.tagline || "I edit branded videos that turn <em>viewers into customers.</em>"} 
-      data-ar={heroData?.taglineAr || "بعمل فيديوهات براند بتحوّل <em>المشاهدين لعملاء.</em>"}
+    <p
+      className="hero-tagline"
+      data-en={heroData?.tagline || "I edit branded videos that turn <em>viewers into customers.</em> Cinematic craft for brands that need their content to <em>perform</em> — not just look pretty."}
+      data-ar={heroData?.taglineAr || "بعمل فيديوهات براند بتحوّل <em>المشاهدين لعملاء.</em> حرفة سينمائية للبراندات اللي محتاجة محتواها <em>يحقق نتائج</em> — مش بس يبقى جميل."}
       dangerouslySetInnerHTML={{ __html: heroData?.tagline || "I edit branded videos that turn <em>viewers into customers.</em> Cinematic craft for brands that need their content to <em>perform</em> — not just look pretty." }}
     ></p>
-    <div className="hero-ctas flex flex-col md:flex-row gap-4">
-      <a href="#work" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && window.spaGo) { window.spaGo('work'); } } } className="cta-secondary">
-        <span data-en="See My Work" data-ar="شاهد أعمالي">See My Work</span>
+    <div className="hero-ctas">
+      <a href={heroPrimaryLink} onClick={(e) => handleDynamicLink(e, heroPrimaryLink)} className="cta-primary">
+        <span data-en={heroPrimaryText} data-ar={heroPrimaryTextAr}>{heroPrimaryText}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href={heroSecondaryLink} onClick={(e) => handleDynamicLink(e, heroSecondaryLink, 'services')} className="cta-secondary">
+        <span data-en={heroSecondaryText} data-ar={heroSecondaryTextAr}>{heroSecondaryText}</span>
       </a>
     </div>
     <div className="hero-trust">
@@ -455,26 +354,12 @@ export default function ClientPage({
       <div className="home-brands-label" data-en="Trusted by teams at" data-ar="بثقة فرق من">Trusted by teams at</div>
       <div className="home-brands-marquee">
         <div className="home-brands-track">
-          <span className="hb-item">Samsung</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">CUPRA</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">9GAG</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">Artlist</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">Asus</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">Samsung</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">CUPRA</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">9GAG</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">Artlist</span>
-          <span className="hb-dot">●</span>
-          <span className="hb-item">Asus</span>
-          <span className="hb-dot">●</span>
+          {(brandsData || []).concat(brandsData || []).map((brand: any, idx: number) => (
+            <span key={idx}>
+              <span className={`hb-item ${brand.style || ''}`}>{brand.name}</span>
+              <span className="hb-dot">●</span>
+            </span>
+          ))}
         </div>
       </div>
     </div>
@@ -483,41 +368,27 @@ export default function ClientPage({
 
 {/* ═══════════════════ HOME — SERVICES TEASER ═══════════════════ */}
 <section id="home-services" data-page="home">
-  <div className="container" style={{ position: 'relative', zIndex: 2 }}>
-    <div className="text-center flex flex-col items-center mb-12">
-      <div className="eyebrow reveal" data-en="What I Do" data-ar="خدماتي">What I Do</div>
-      <h2 className="heading reveal" data-en="Crafted for the moment." data-ar="مصنوع للحظة.">Crafted for the moment.</h2>
-      <p className="home-section-sub reveal max-w-2xl" data-en="From cinematic edits to brand stories — every project gets the same care." data-ar="من مونتاج سينمائي لقصص براندات — كل مشروع بياخد نفس الاهتمام.">From cinematic edits to brand stories — every project gets the same care.</p>
-    </div>
+  <div className="container">
+    <div className="eyebrow reveal" data-en="What I Do" data-ar="خدماتي">What I Do</div>
+    <h2 className="heading reveal" data-en="Crafted for the moment." data-ar="مصنوع للحظة.">Crafted for the moment.</h2>
+    <p className="home-section-sub reveal" data-en="From cinematic edits to brand stories — every project gets the same care." data-ar="من مونتاج سينمائي لقصص براندات — كل مشروع بياخد نفس الاهتمام.">From cinematic edits to brand stories — every project gets the same care.</p>
 
-    <div className="home-svc-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div className="home-svc-card reveal" onClick={() => { if(typeof window !== "undefined" && window.spaGo) { window.spaGo('services'); } } }>
-        <div className="home-svc-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+    <div className="home-svc-grid">
+      {(servicesData || []).slice(0, 3).map((service: any, idx: number) => (
+        <div key={service.id || idx} className="home-svc-card reveal" onClick={() => { if(typeof window !== "undefined" && (window as any).spaGo) { (window as any).spaGo('services'); } } }>
+          <div className="home-svc-icon">
+            {getServiceIcon(service.icon)}
+          </div>
+          <div className="home-svc-title" data-en={service.title} data-ar={service.titleAr}>{service.title}</div>
+          <div className="home-svc-desc" data-en={service.description} data-ar={service.descriptionAr}>{service.description}</div>
         </div>
-        <div className="home-svc-title" data-en="Video Editing" data-ar="مونتاج الفيديو">Video Editing</div>
-        <div className="home-svc-desc" data-en="Cinematic cuts that turn footage into stories." data-ar="مونتاج سينمائي بيحوّل الفيديو لقصص.">Cinematic cuts that turn footage into stories.</div>
-      </div>
-      <div className="home-svc-card reveal" onClick={() => { if(typeof window !== "undefined" && window.spaGo) { window.spaGo('services'); } } }>
-        <div className="home-svc-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
-        </div>
-        <div className="home-svc-title" data-en="Cinematography" data-ar="التصوير السينمائي">Cinematography</div>
-        <div className="home-svc-desc" data-en="Directing and shooting with a cinematic eye." data-ar="إخراج وتصوير بعين سينمائية.">Directing and shooting with a cinematic eye.</div>
-      </div>
-      <div className="home-svc-card reveal" onClick={() => { if(typeof window !== "undefined" && window.spaGo) { window.spaGo('services'); } } }>
-        <div className="home-svc-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        </div>
-        <div className="home-svc-title" data-en="Brand &amp; Documentary" data-ar="براند ووثائقي">Brand &amp; Documentary</div>
-        <div className="home-svc-desc" data-en="Long-form storytelling with real emotion." data-ar="سرد طويل بإحساس حقيقي.">Long-form storytelling with real emotion.</div>
-      </div>
+      ))}
     </div>
 
     <div className="home-section-cta reveal">
-      <a href="#services" onClick={() => { if(typeof window !== "undefined" && window.spaGo) { window.spaGo('services');return false; } } } className="ghost-link">
+      <a href="#services" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).spaGo) { (window as any).spaGo('services'); } }} className="ghost-link">
         <span data-en="See all services" data-ar="شاهد كل الخدمات">See all services</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
       </a>
     </div>
   </div>
@@ -530,12 +401,12 @@ export default function ClientPage({
       <div className="home-cta-eyebrow" data-en="Let's create together" data-ar="خلينا نبدع سوا">Let's create together</div>
       <h2 className="home-cta-title" data-en="Ready to make <em>something real?</em>" data-ar="جاهز نعمل <em>حاجة حقيقية؟</em>">Ready to make <em>something real?</em></h2>
       <p className="home-cta-sub" data-en="A free 30-minute call. No commitment. Just a conversation about your project." data-ar="مكالمة مجانية ٣٠ دقيقة. بدون أي التزام. مجرد كلام عن مشروعك.">A free 30-minute call. No commitment. Just a conversation about your project.</p>
-      <div className="home-cta-actions flex flex-col md:flex-row gap-4">
-        <a href="#" onClick={() => { if(typeof window !== "undefined" && window.qbOpen) { window.qbOpen();return false; } } } className="cta-primary">
+      <div className="home-cta-actions">
+        <a href="#" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } }} className="cta-primary">
           <span data-en="Start your project" data-ar="ابدأ مشروعك">Start your project</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="#about" onClick={() => { if(typeof window !== "undefined" && window.spaGo) { window.spaGo('about');return false; } } } className="cta-secondary">
+        <a href="#about" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).spaGo) { (window as any).spaGo('about'); } }} className="cta-secondary">
           <span data-en="Learn more about Karim" data-ar="اعرف أكثر عن كريم">Learn more about Karim</span>
         </a>
       </div>
@@ -549,10 +420,10 @@ export default function ClientPage({
         <div className="eyebrow" data-en="Selected Projects" data-ar="مشاريع مختارة">Selected Projects</div>
         <h2 className="heading" data-en="My Portfolio." data-ar="معرض أعمالي">My Portfolio.</h2>
       </div>
-      
+
       <div className="work-grid">
-        {(worksData || []).filter((w: any) => w.active).map((work: any) => (
-          <a key={work.id} href={/work/ + work.slug} className="work-card">
+        {(worksData || []).filter((w: any) => w.active !== false).map((work: any) => (
+          <a key={work.id} href={`/work/${work.slug}`} className="work-card">
             <div className="work-thumbnail">
               <img src={work.thumbnail || '/images/karim.jpg'} alt={work.title} />
               <div className="work-overlay">
@@ -566,8 +437,8 @@ export default function ClientPage({
           </a>
         ))}
       </div>
-      
-      {(!worksData || worksData.filter((w: any) => w.active).length === 0) && (
+
+      {(!worksData || worksData.filter((w: any) => w.active !== false).length === 0) && (
         <div style={{ textAlign: 'center', color: 'var(--muted)', padding: '2rem 0' }} data-en="No projects added yet." data-ar="لا توجد مشاريع مضافة حالياً.">No projects added yet.</div>
       )}
     </div>
@@ -620,108 +491,110 @@ export default function ClientPage({
     </div>
 
     {/* Vertical progress rail (sticky) */}
-    {/* CHAPTER 1: The Opening */}
-    <div className="story-chapter" data-story-chapter="1">
-      <div className="story-content">
-        <div className="story-eyebrow reveal-story"><span data-en="Chapter One" data-ar="الفصل الأول">Chapter One</span></div>
-        <h2 className="story-title reveal-story" data-en='A boy with a <em>camera.</em>' data-ar='ولد ومعاه <em>كاميرا.</em>'>A boy with a <em>camera.</em></h2>
-        <p className="story-text reveal-story" data-en="It started in 2017. A borrowed camera. A small editing program. And a stubborn belief that stories deserved to be told the right way." data-ar="بدأت في ٢٠١٧. كاميرا مستعارة. برنامج مونتاج بسيط. وإيمان عنيد إن القصص لازم تتروى صح.">It started in 2017. A borrowed camera. A small editing program. And a stubborn belief that stories deserved to be told the right way.</p>
-        <div className="story-year reveal-story" data-en="2017" data-ar="٢٠١٧">2017</div>
-      </div>
-      <div className="story-visual">
-        <div className="story-photo-frame">
-          <div className="story-photo-bg" id="storyPhoto1"></div>
-          <div className="story-photo-overlay"></div>
-        </div>
-      </div>
-    </div>
+    {(storyData || []).map((chap: any, idx: number) => {
+      const orderNum = chap.order;
+      const isReverse = chap.reversed;
+      const isFinal = chap.order === 5;
 
-    {/* CHAPTER 2: The Spark */}
-    <div className="story-chapter story-chapter-reverse" data-story-chapter="2">
-      <div className="story-content">
-        <div className="story-eyebrow reveal-story"><span data-en="Chapter Two" data-ar="الفصل الثاني">Chapter Two</span></div>
-        <h2 className="story-title reveal-story" data-en='The first <em>spark.</em>' data-ar='أول <em>شرارة.</em>'>The first <em>spark.</em></h2>
-        <p className="story-text reveal-story" data-en="The first project paid in experience, not money. Then the second. Then the tenth. Each cut taught me something the last one didn't." data-ar="أول مشروع كان دفعه خبرة مش فلوس. وبعدين التاني. وبعدين العاشر. كل مونتاج علّمني حاجة جديدة.">The first project paid in experience, not money. Then the second. Then the tenth. Each cut taught me something the last one didn't.</p>
-        <div className="story-stats reveal-story">
-          <div className="story-stat-item"><span className="story-stat-num" data-count-target="100">0</span><span className="story-stat-lbl" data-en="early projects" data-ar="مشروع البداية">early projects</span></div>
-        </div>
-      </div>
-      <div className="story-visual">
-        <div className="story-glyph">
-          <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <circle cx="100" cy="100" r="80" opacity="0.3"/>
-            <circle cx="100" cy="100" r="60" opacity="0.5"/>
-            <circle cx="100" cy="100" r="40" opacity="0.7"/>
-            <circle cx="100" cy="100" r="20" fill="currentColor" opacity="0.8"/>
-            <path d="M100 20 L100 180 M20 100 L180 100" opacity="0.2"/>
-          </svg>
-        </div>
-      </div>
-    </div>
+      const renderVisual = () => {
+        switch (orderNum) {
+          case 1:
+            return (
+              <div className="story-photo-frame">
+                <div className="story-photo-bg" id="storyPhoto1"></div>
+                <div className="story-photo-overlay"></div>
+              </div>
+            );
+          case 2:
+            return (
+              <div className="story-glyph">
+                <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                  <circle cx="100" cy="100" r="80" opacity="0.3"/>
+                  <circle cx="100" cy="100" r="60" opacity="0.5"/>
+                  <circle cx="100" cy="100" r="40" opacity="0.7"/>
+                  <circle cx="100" cy="100" r="20" fill="currentColor" opacity="0.8"/>
+                  <path d="M100 20 L100 180 M20 100 L180 100" opacity="0.2"/>
+                </svg>
+              </div>
+            );
+          case 3:
+            return (
+              <div className="story-photo-frame story-photo-tilted">
+                <div className="story-photo-bg" id="storyPhoto2"></div>
+                <div className="story-photo-overlay"></div>
+                <div className="story-photo-badge">
+                  <span data-en={chap.imageBadge || "The craft"} data-ar={chap.imageBadgeAr || "الحرفة"}>
+                    {chap.imageBadge || "The craft"}
+                  </span>
+                </div>
+              </div>
+            );
+          case 4:
+            return (
+              <div className="story-globe">
+                <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth={1}>
+                  <circle cx="100" cy="100" r="85" opacity="0.4"/>
+                  <ellipse cx="100" cy="100" rx="85" ry="35" opacity="0.4"/>
+                  <ellipse cx="100" cy="100" rx="85" ry="55" opacity="0.3"/>
+                  <ellipse cx="100" cy="100" rx="35" ry="85" opacity="0.4"/>
+                  <ellipse cx="100" cy="100" rx="55" ry="85" opacity="0.3"/>
+                  <circle cx="100" cy="100" r="3" fill="#5fa3e0"/>
+                  <circle cx="55" cy="80" r="2" fill="#5fa3e0"/>
+                  <circle cx="140" cy="120" r="2" fill="#5fa3e0"/>
+                  <circle cx="70" cy="140" r="2" fill="#5fa3e0"/>
+                  <circle cx="155" cy="65" r="2" fill="#5fa3e0"/>
+                </svg>
+              </div>
+            );
+          default:
+            return null;
+        }
+      };
 
-    {/* CHAPTER 3: The Craft */}
-    <div className="story-chapter" data-story-chapter="3">
-      <div className="story-content">
-        <div className="story-eyebrow reveal-story"><span data-en="Chapter Three" data-ar="الفصل الثالث">Chapter Three</span></div>
-        <h2 className="story-title reveal-story" data-en='Mastering the <em>craft.</em>' data-ar='إتقان <em>الحرفة.</em>'>Mastering the <em>craft.</em></h2>
-        <p className="story-text reveal-story" data-en="Eight years of late nights. Of color grading until sunrise. Of rebuilding sequences three times to find the one cut that makes it sing." data-ar="٨ سنين من السهر. من تدريج الألوان لحد طلوع الشمس. من إعادة بناء السكوينس ٣ مرات عشان نلاقي المونتاج اللي بيخلي الفيلم يغني.">Eight years of late nights. Of color grading until sunrise. Of rebuilding sequences three times to find the one cut that makes it sing.</p>
-        <div className="story-stats reveal-story">
-          <div className="story-stat-item"><span className="story-stat-num" data-count-target="1318">0</span><span className="story-stat-lbl" data-en="projects shipped" data-ar="مشروع منجز">projects shipped</span></div>
-          <div className="story-stat-item"><span className="story-stat-num" data-count-target="8">0</span><span className="story-stat-lbl" data-en="years crafting" data-ar="سنوات إبداع">years crafting</span></div>
-        </div>
-      </div>
-      <div className="story-visual">
-        <div className="story-photo-frame story-photo-tilted">
-          <div className="story-photo-bg" id="storyPhoto2"></div>
-          <div className="story-photo-overlay"></div>
-          <div className="story-photo-badge"><span data-en="The craft" data-ar="الحرفة">The craft</span></div>
-        </div>
-      </div>
-    </div>
+      if (isFinal) {
+        return (
+          <div key={chap.id || idx} className="story-chapter story-chapter-final" data-story-chapter={orderNum}>
+            <div className="story-content story-content-centered">
+              <div className="story-eyebrow reveal-story"><span data-en={chap.eyebrow} data-ar={chap.eyebrowAr}>{chap.eyebrow}</span></div>
+              <h2 className="story-title-big reveal-story" data-en={chap.title} data-ar={chap.titleAr} dangerouslySetInnerHTML={{ __html: chap.title }}></h2>
+              <p className="story-text-big reveal-story" data-en={chap.text} data-ar={chap.textAr}>{chap.text}</p>
+              <div className="story-cta-wrap reveal-story">
+                <a href="#" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } }} className="cta-primary">
+                  <span data-en="Let's create together" data-ar="خلينا نبدع سوا">Let's create together</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        );
+      }
 
-    {/* CHAPTER 4: The Reach */}
-    <div className="story-chapter story-chapter-reverse" data-story-chapter="4">
-      <div className="story-content">
-        <div className="story-eyebrow reveal-story"><span data-en="Chapter Four" data-ar="الفصل الرابع">Chapter Four</span></div>
-        <h2 className="story-title reveal-story" data-en='Stories that <em>travel.</em>' data-ar='قصص <em>بتسافر.</em>'>Stories that <em>travel.</em></h2>
-        <p className="story-text reveal-story" data-en="From Cairo, the work reached fourteen countries. From small startups to global brands like Samsung, CUPRA, and Artlist. Every story unique. Every cut intentional." data-ar="من القاهرة، الشغل وصل لـ ١٤ دولة. من شركات ناشئة صغيرة لبراندات عالمية زي Samsung، CUPRA و Artlist. كل قصة فريدة. كل قطعة مونتاج مقصودة.">From Cairo, the work reached fourteen countries. From small startups to global brands like Samsung, CUPRA, and Artlist. Every story unique. Every cut intentional.</p>
-        <div className="story-stats reveal-story">
-          <div className="story-stat-item"><span className="story-stat-num" data-count-target="14">0</span><span className="story-stat-lbl" data-en="countries" data-ar="دولة">countries</span></div>
-          <div className="story-stat-item"><span className="story-stat-num" data-count-target="470">0</span><span className="story-stat-lbl" data-en="clients" data-ar="عميل">clients</span></div>
+      return (
+        <div key={chap.id || idx} className={`story-chapter ${isReverse ? 'story-chapter-reverse' : ''}`} data-story-chapter={orderNum}>
+          <div className="story-content">
+            <div className="story-eyebrow reveal-story"><span data-en={chap.eyebrow} data-ar={chap.eyebrowAr}>{chap.eyebrow}</span></div>
+            <h2 className="story-title reveal-story" data-en={chap.title} data-ar={chap.titleAr} dangerouslySetInnerHTML={{ __html: chap.title }}></h2>
+            <p className="story-text reveal-story" data-en={chap.text} data-ar={chap.textAr}>{chap.text}</p>
+            {chap.imageBadge && orderNum === 1 && (
+              <div className="story-year reveal-story" data-en={chap.imageBadge} data-ar={chap.imageBadgeAr}>{chap.imageBadge}</div>
+            )}
+            {chap.stats && (chap.stats as any[]).length > 0 && (
+              <div className="story-stats reveal-story">
+                {(chap.stats as any[]).map((s: any, sIdx: number) => (
+                  <div key={sIdx} className="story-stat-item">
+                    <span className="story-stat-num" data-count-target={s.number}>0</span>
+                    <span className="story-stat-lbl" data-en={s.label} data-ar={s.labelAr}>{s.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="story-visual">
+            {renderVisual()}
+          </div>
         </div>
-      </div>
-      <div className="story-visual">
-        <div className="story-globe">
-          <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" strokeWidth="1">
-            <circle cx="100" cy="100" r="85" opacity="0.4"/>
-            <ellipse cx="100" cy="100" rx="85" ry="35" opacity="0.4"/>
-            <ellipse cx="100" cy="100" rx="85" ry="55" opacity="0.3"/>
-            <ellipse cx="100" cy="100" rx="35" ry="85" opacity="0.4"/>
-            <ellipse cx="100" cy="100" rx="55" ry="85" opacity="0.3"/>
-            <circle cx="100" cy="100" r="3" fill="#5fa3e0"/>
-            <circle cx="55" cy="80" r="2" fill="#5fa3e0"/>
-            <circle cx="140" cy="120" r="2" fill="#5fa3e0"/>
-            <circle cx="70" cy="140" r="2" fill="#5fa3e0"/>
-            <circle cx="155" cy="65" r="2" fill="#5fa3e0"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    {/* CHAPTER 5: The Today */}
-    <div className="story-chapter story-chapter-final" data-story-chapter="5">
-      <div className="story-content story-content-centered">
-        <div className="story-eyebrow reveal-story"><span data-en="And Today" data-ar="واليوم">And Today</span></div>
-        <h2 className="story-title-big reveal-story" data-en='The story <em>continues.</em>' data-ar='القصة <em>مستمرة.</em>'>The story <em>continues.</em></h2>
-        <p className="story-text-big reveal-story" data-en="Still chasing that perfect cut. Still up at 3am refining a sequence. Still believing every brand has a story worth telling — and that I'm here to tell it." data-ar="لسه ببحث عن المونتاج المثالي. لسه صاحي الساعة ٣ الفجر بحسّن سكوينس. لسه مؤمن إن كل براند عنده قصة تستاهل تتحكي — وإني هنا عشان أحكيها.">Still chasing that perfect cut. Still up at 3am refining a sequence. Still believing every brand has a story worth telling — and that I'm here to tell it.</p>
-        <div className="story-cta-wrap reveal-story">
-          <a href="#" onClick={() => { if(typeof window !== "undefined" && window.qbOpen) { window.qbOpen();return false; } } } className="cta-primary">
-            <span data-en="Let's create together" data-ar="خلينا نبدع سوا">Let's create together</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>
+      );
+    })}
 
   </div>
 </section>
@@ -775,7 +648,7 @@ export default function ClientPage({
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
     <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(127,196,255,0.06)" strokeWidth="0.5"/>
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(127,196,255,0.06)" strokeWidth={0.5}/>
     </pattern>
   </defs>
   <rect width="1000" height="500" fill="url(#gridPattern)"/>
@@ -788,14 +661,14 @@ export default function ClientPage({
 </div>
         </div>
         <div className="map-countries">
-          <span className="ctry home">🇪🇬 Egypt</span>
-          <span className="ctry">🇸🇦 Saudi Arabia</span><span className="ctry">🇦🇪 UAE</span>
-          <span className="ctry">🇰🇼 Kuwait</span><span className="ctry">🇱🇧 Lebanon</span>
-          <span className="ctry">🇸🇾 Syria</span><span className="ctry">🇯🇴 Jordan</span>
-          <span className="ctry">🇮🇶 Iraq</span><span className="ctry">🇹🇷 Turkey</span>
-          <span className="ctry">🇳🇴 Norway</span><span className="ctry">🇬🇧 UK</span>
-          <span className="ctry">🇺🇸 USA</span><span className="ctry">🇨🇦 Canada</span>
-          <span className="ctry">🇦🇺 Australia</span>
+          {(countriesData || []).map((country: any, idx: number) => (
+            <span
+              key={country.id || idx}
+              className={`ctry ${country.isHome ? 'home' : ''}`}
+            >
+              {country.flag} <span data-en={country.name} data-ar={country.nameAr}>{country.name}</span>
+            </span>
+          ))}
         </div>
       </div>
     </div>
@@ -811,59 +684,18 @@ export default function ClientPage({
       <p className="lead" data-en="From the first message to final delivery — here's exactly how we'll work together." data-ar="من أول رسالة لحد التسليم النهائي — اعرف بالظبط هنشتغل مع بعض إزاي.">From the first message to final delivery — here's exactly how we'll work together.</p>
     </div>
 
-    <div className="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div className="process-step">
-        <div className="process-num">01</div>
-        <div className="process-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-          </svg>
+    <div className="process-grid">
+      {(processData || []).map((step: any, idx: number) => (
+        <div key={step.id || idx} className="process-step">
+          <div className="process-num">{String(idx + 1).padStart(2, '0')}</div>
+          <div className="process-icon">
+            {getProcessIcon(step.icon)}
+          </div>
+          <h3 className="process-title" data-en={step.title} data-ar={step.titleAr}>{step.title}</h3>
+          <p className="process-desc" data-en={step.description} data-ar={step.descriptionAr}>{step.description}</p>
+          <div className="process-time" data-en={step.timeLabel} data-ar={step.timeLabelAr}>{step.timeLabel}</div>
         </div>
-        <h3 className="process-title" data-en="Discovery Call" data-ar="جلسة الاستكشاف">Discovery Call</h3>
-        <p className="process-desc" data-en="A free 30-min call to understand your vision, goals, audience, and timeline. No commitment." data-ar="مكالمة مجانية ٣٠ دقيقة نفهم فيها رؤيتك وأهدافك وجمهورك. بدون أي التزام.">A free 30-min call to understand your vision, goals, audience, and timeline. No commitment.</p>
-        <div className="process-time" data-en="30 min · Free" data-ar="٣٠ دقيقة · مجاناً">30 min · Free</div>
-      </div>
-
-      <div className="process-step">
-        <div className="process-num">02</div>
-        <div className="process-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-          </svg>
-        </div>
-        <h3 className="process-title" data-en="Custom Proposal" data-ar="عرض مخصص">Custom Proposal</h3>
-        <p className="process-desc" data-en="You receive a clear proposal: scope, deliverables, timeline, and transparent pricing — within 24 hours." data-ar="بتستلم عرض واضح: نطاق الشغل، الـ deliverables، المدة، والتسعير الشفاف — خلال ٢٤ ساعة.">You receive a clear proposal: scope, deliverables, timeline, and transparent pricing — within 24 hours.</p>
-        <div className="process-time" data-en="Within 24 hours" data-ar="خلال ٢٤ ساعة">Within 24 hours</div>
-      </div>
-
-      <div className="process-step">
-        <div className="process-num">03</div>
-        <div className="process-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <polygon points="23 7 16 12 23 17 23 7"/>
-            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-          </svg>
-        </div>
-        <h3 className="process-title" data-en="Production & Edit" data-ar="الإنتاج والمونتاج">Production & Edit</h3>
-        <p className="process-desc" data-en="I get to work — shooting, editing, color grading, sound. You get progress updates and a preview before final cut." data-ar="ببدأ شغل — تصوير، مونتاج، تصحيح ألوان، صوت. بتاخد تحديثات منتظمة و preview قبل الـ final cut.">I get to work — shooting, editing, color grading, sound. You get progress updates and a preview before final cut.</p>
-        <div className="process-time" data-en="3-14 days typical" data-ar="٣ - ١٤ يوم غالباً">3-14 days typical</div>
-      </div>
-
-      <div className="process-step">
-        <div className="process-num">04</div>
-        <div className="process-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-            <polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
-        </div>
-        <h3 className="process-title" data-en="Delivery & Revisions" data-ar="التسليم والمراجعات">Delivery & Revisions</h3>
-        <p className="process-desc" data-en="You get the final files in all formats you need. 2 free rounds of revisions to make it perfect." data-ar="بتستلم الملفات النهائية في كل الصيغ اللي محتاجها. مع جولتين مراجعة مجانية للوصول للنتيجة المثالية.">You get the final files in all formats you need. 2 free rounds of revisions to make it perfect.</p>
-        <div className="process-time" data-en="Same day delivery" data-ar="تسليم في نفس اليوم">Same day delivery</div>
-      </div>
+      ))}
     </div>
 
     {/* What I Need From You — Collaboration expectations */}
@@ -873,10 +705,10 @@ export default function ClientPage({
         <h3 className="exp-title" data-en="What I'll need from <em>you</em>" data-ar="اللي محتاجه <em>منك</em>">What I'll need from <em>you</em></h3>
         <p className="exp-sub" data-en="Great work is a two-way street. Here's how we'll keep your project moving without delays." data-ar="الشغل العظيم بيتعمل سوا. ده اللي بيخلي مشروعك يمشي بدون تأخير.">Great work is a two-way street. Here's how we'll keep your project moving without delays.</p>
       </div>
-      <div className="exp-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="exp-grid">
         <div className="exp-item">
           <div className="exp-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
           <div className="exp-content">
             <h4 className="exp-item-title" data-en="Quick feedback" data-ar="فيدباك سريع">Quick feedback</h4>
@@ -885,7 +717,7 @@ export default function ClientPage({
         </div>
         <div className="exp-item">
           <div className="exp-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </div>
           <div className="exp-content">
             <h4 className="exp-item-title" data-en="Clear brief" data-ar="بريف واضح">Clear brief</h4>
@@ -894,7 +726,7 @@ export default function ClientPage({
         </div>
         <div className="exp-item">
           <div className="exp-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
           </div>
           <div className="exp-content">
             <h4 className="exp-item-title" data-en="Open communication" data-ar="تواصل مفتوح">Open communication</h4>
@@ -903,7 +735,7 @@ export default function ClientPage({
         </div>
         <div className="exp-item">
           <div className="exp-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           </div>
           <div className="exp-content">
             <h4 className="exp-item-title" data-en="Approval on time" data-ar="موافقة في الوقت">Approval on time</h4>
@@ -914,9 +746,9 @@ export default function ClientPage({
     </div>
 
     <div className="process-cta">
-      <a href="#" onClick={() => { if(typeof window !== "undefined" && window.qbOpen) { window.qbOpen();return false; } } } className="cta-primary">
+      <a href="#" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } }} className="cta-primary">
         <span data-en="Start Your Project" data-ar="ابدأ مشروعك">Start Your Project</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
       </a>
     </div>
   </div>
@@ -925,11 +757,8 @@ export default function ClientPage({
 {/* SERVICES (clickable cards) */}
 <section id="services" data-page="services">
   <div className="container">
-    <div className="text-center flex flex-col items-center mb-16">
-      <div className="eyebrow" data-en="What I Do" data-ar="خدماتي">What I Do</div>
-      <h2 className="heading" data-en="Crafted services." data-ar="خدمات احترافية">Crafted services.</h2>
-      <p className="lead" data-en="Whether it's a 15-second social ad or a 60-minute documentary, the goal is the same: make them feel it." data-ar="سواء إعلان ١٥ ثانية أو وثائقي ٦٠ دقيقة، الهدف واحد: نخليهم يعيشوا الإحساس.">Whether it's a 15-second social ad or a 60-minute documentary, the goal is the same: make them feel it.</p>
-    </div>
+    <div className="eyebrow" data-en="What I Do" data-ar="خدماتي">What I Do</div>
+    <h2 className="heading" data-en="Crafted services." data-ar="خدمات احترافية">Crafted services.</h2>
 
     {/* Rotating description text */}
     <div className="svc-rotator">
@@ -943,55 +772,19 @@ export default function ClientPage({
         <span className="svc-rword" data-en="color grading that gives your footage soul." data-ar="تدريج ألوان بيدّي لقطاتك روح.">color grading that gives your footage soul.</span>
       </span>
     </div>
-    <div className="services-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div className="svc-card reveal" data-service="editing">
-        <div className="svc-icon"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-        <div className="svc-card-body">
-          <div className="svc-title" data-en="Video Editing" data-ar="مونتاج الفيديو">Video Editing</div>
-          <p className="svc-desc" data-en="Cinematic cuts, seamless transitions, and color grading that turn raw footage into compelling visual stories." data-ar="مونتاج سينمائي، انتقالات سلسة، وتدريج ألوان بيحوّل المواد الخام لقصص بصرية مؤثرة.">Cinematic cuts, seamless transitions, and color grading that turn raw footage into compelling visual stories.</p>
+    <div className="services-grid">
+      {(servicesData || []).map((service: any, idx: number) => (
+        <div key={service.id || idx} className="svc-card reveal" data-service={service.icon}>
+          <div className="svc-icon">
+            {getServiceIcon(service.icon)}
+          </div>
+          <div className="svc-card-body">
+            <div className="svc-title" data-en={service.title} data-ar={service.titleAr}>{service.title}</div>
+            <p className="svc-desc" data-en={service.description} data-ar={service.descriptionAr}>{service.description}</p>
+          </div>
+          <span className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
         </div>
-        <span className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
-      </div>
-      <div className="svc-card reveal" data-service="cinematography">
-        <div className="svc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg></div>
-        <div className="svc-card-body">
-          <div className="svc-title" data-en="Cinematography" data-ar="التصوير السينمائي">Cinematography</div>
-          <p className="svc-desc" data-en="Full videography service — directing, shooting, and capturing footage with a cinematic eye." data-ar="خدمة فيديو كاملة — إخراج، تصوير، والتقاط مواد بعين سينمائية.">Full videography service — directing, shooting, and capturing footage with a cinematic eye.</p>
-        </div>
-        <span className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
-      </div>
-      <div className="svc-card reveal" data-service="social">
-        <div className="svc-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-        <div className="svc-card-body">
-          <div className="svc-title" data-en="Social Content" data-ar="محتوى السوشيال">Social Content</div>
-          <p className="svc-desc" data-en="Reels, TikToks, and short-form content engineered for maximum reach and engagement." data-ar="ريلز، تيك توك، ومحتوى قصير مصمم لأقصى وصول وتفاعل.">Reels, TikToks, and short-form content engineered for maximum reach and engagement.</p>
-        </div>
-        <span className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
-      </div>
-      <div className="svc-card reveal" data-service="documentary">
-        <div className="svc-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <div className="svc-card-body">
-          <div className="svc-title" data-en="Documentary &amp; Brand" data-ar="وثائقي وبراند">Documentary &amp; Brand</div>
-          <p className="svc-desc" data-en="Long-form storytelling that captures brand identity, human stories, and real emotion." data-ar="سرد طويل بيلتقط هوية البراند والقصص الإنسانية والإحساس الحقيقي.">Long-form storytelling that captures brand identity, human stories, and real emotion.</p>
-        </div>
-        <span className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
-      </div>
-      <div className="svc-card reveal" data-service="mentorship">
-        <div className="svc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20v-2a8 8 0 0 1 16 0v2"/></svg></div>
-        <div className="svc-card-body">
-          <div className="svc-title" data-en="Training &amp; Mentorship" data-ar="تدريب وإرشاد">Training &amp; Mentorship</div>
-          <p className="svc-desc" data-en="One-on-one and group coaching for editors and videographers ready to level up." data-ar="جلسات فردية وجماعية للمونتيرز والمصورين الجاهزين يطوروا.">One-on-one and group coaching for editors and videographers ready to level up.</p>
-        </div>
-        <span className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
-      </div>
-      <div className="svc-card reveal" data-service="motion">
-        <div className="svc-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <div className="svc-card-body">
-          <div className="svc-title" data-en="Motion &amp; Graphics" data-ar="موشن جرافيكس">Motion &amp; Graphics</div>
-          <p className="svc-desc" data-en="Animated titles, logo reveals, and motion graphics that elevate production value." data-ar="عناوين متحركة، شعارات، وموشن جرافيكس بترفع قيمة الإنتاج.">Animated titles, logo reveals, and motion graphics that elevate production value.</p>
-        </div>
-        <span className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
-      </div>
+      ))}
     </div>
   </div>
 </section>
@@ -1011,29 +804,57 @@ export default function ClientPage({
 <section id="training" data-page="training">
   <div className="container">
     <div className="eyebrow" data-en="Level Up" data-ar="ارتقي بمستواك">Level Up</div>
-    <h2 className="heading" data-en="Editing mentorship." data-ar="برنامج تدريب المونتاج">Editing mentorship.</h2>
+    <h2 className="heading" data-en={trainingData?.title || "Editing mentorship."} data-ar={trainingData?.titleAr || "برنامج تدريب المونتاج"}>
+      {trainingData?.title || "Editing mentorship."}
+    </h2>
     <div className="training-card">
       <div>
-        <h3 data-en="Learn from a working professional." data-ar="تعلم من محترف يمارس المجال">Learn from a working professional.</h3>
-        <p data-en="Focused, practical training for aspiring editors and videographers who want real-world skills — not textbook theory." data-ar="تدريب عملي ومركز للمونتيرز والمصورين الطامحين اللي عايزين مهارات حقيقية — مش نظريات.">Focused, practical training for aspiring editors and videographers who want real-world skills — not textbook theory.</p>
-        <p data-en="Whether you're starting out or trying to break into professional work, my mentorship is built around your specific goals." data-ar="سواء بتبدأ أو بتحاول تدخل المجال الاحترافي، الإرشاد بتاعي مصمم حوالين أهدافك الخاصة.">Whether you're starting out or trying to break into professional work, my mentorship is built around your specific goals.</p>
+        {trainingDescriptionParts.map((part, idx) => {
+          const textAr = trainingDescriptionArParts[idx] || part;
+          return idx === 0 ? (
+            <h3 key={idx} data-en={part} data-ar={textAr}>{part}</h3>
+          ) : (
+            <p key={idx} data-en={part} data-ar={textAr}>{part}</p>
+          );
+        })}
         <ul className="training-list">
-          <li data-en="Premiere Pro &amp; DaVinci Resolve workflows" data-ar="سير عمل Premiere Pro و DaVinci Resolve">Premiere Pro &amp; DaVinci Resolve workflows</li>
-          <li data-en="Color grading &amp; LUT creation" data-ar="تدريج الألوان وصنع LUTs">Color grading &amp; LUT creation</li>
-          <li data-en="Short-form editing for Reels &amp; TikTok" data-ar="مونتاج المحتوى القصير للريلز والتيك توك">Short-form editing for Reels &amp; TikTok</li>
-          <li data-en="Storytelling and pacing techniques" data-ar="تقنيات السرد والإيقاع">Storytelling and pacing techniques</li>
-          <li data-en="Building your portfolio &amp; finding clients" data-ar="بناء البورتفوليو والوصول للعملاء">Building your portfolio &amp; finding clients</li>
+          {trainingData?.points?.map((pt: string, idx: number) => (
+            <li key={idx} data-en={pt} data-ar={trainingData?.pointsAr?.[idx] || pt}>{pt}</li>
+          ))}
         </ul>
         <div className="consult-btn-wrap">
-          <a href="#" onClick={() => { if(typeof window !== "undefined" && window.qbOpen) { window.qbOpen();return false; } } } className="consult-btn">
+          <a href="#" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } }} className="consult-btn">
             <span data-en="Book a Consultation" data-ar="احجز استشارة">Book a Consultation</span>
           </a>
         </div>
       </div>
-      <div className="training-stats grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="ts"><div className="ts-n"><span className="count" data-target="200" data-suffix="+">0</span></div><div className="ts-l" data-en="Students Trained" data-ar="طالب مدرّب">Students Trained</div></div>
-        <div className="ts"><div className="ts-n fade-pulse">1:1</div><div className="ts-l fade-pulse" data-en="Personalized" data-ar="جلسات فردية" style={{ animationDelay: '.5s' }}>Personalized</div></div>
-        <div className="ts"><div className="ts-n" data-en="Online" data-ar="أونلاين" style={{ fontSize: '32px' }}>Online</div><div className="ts-l" data-en="Available Worldwide" data-ar="متاح عالمياً">Available Worldwide</div></div>
+      <div className="training-stats">
+        {trainingStatsData?.map((stat, idx) => {
+          if (stat.number === '1:1') {
+            return (
+              <div key={idx} className="ts">
+                <div className="ts-n fade-pulse">1:1</div>
+                <div className="ts-l fade-pulse" data-en={stat.label} data-ar={stat.labelAr} style={{ animationDelay: '.5s' }}>{stat.label}</div>
+              </div>
+            );
+          } else if (stat.number === 'Online') {
+            return (
+              <div key={idx} className="ts">
+                <div className="ts-n" data-en="Online" data-ar="أونلاين" style={{ fontSize: '32px' }}>Online</div>
+                <div className="ts-l" data-en={stat.label} data-ar={stat.labelAr}>{stat.label}</div>
+              </div>
+            );
+          } else {
+            return (
+              <div key={idx} className="ts">
+                <div className="ts-n">
+                  <span className="count" data-target={stat.number.replace(/\D/g, '')} data-suffix={stat.number.replace(/\d/g, '')}>0</span>
+                </div>
+                <div className="ts-l" data-en={stat.label} data-ar={stat.labelAr}>{stat.label}</div>
+              </div>
+            );
+          }
+        })}
       </div>
     </div>
 
@@ -1057,62 +878,22 @@ export default function ClientPage({
         <h3 style={{ fontSize: '32px', fontWeight: '600', color: 'var(--white)', letterSpacing: '-.8px', marginTop: '12px' }} data-en="Hear it from them." data-ar="اسمعها منهم">Hear it from them.</h3>
         <p style={{ fontSize: '15px', color: 'var(--muted)', maxWidth: '520px', margin: '16px auto 0', lineHeight: '1.6' }} data-en="Real students sharing their journey and transformation." data-ar="طلاب حقيقيون يشاركون رحلتهم وتطورهم.">Real students sharing their journey and transformation.</p>
       </div>
-      <div className="video-reviews-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="video-card">
-          <div className="video-card-glow"></div>
-          <div className="video-card-bg"></div>
-          <div className="video-card-quote">"</div>
-          <div className="video-card-play">
-            <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
+      <div className="video-reviews-grid">
+        {testimonialsData?.filter(t => t.isVideo).map((t, idx) => (
+          <div key={idx} className="video-card">
+            <div className="video-card-glow"></div>
+            <div className="video-card-bg"></div>
+            <div className="video-card-quote">"</div>
+            <div className="video-card-play" onClick={() => { if(typeof window !== "undefined" && (window as any).openVideoModal) { (window as any).openVideoModal(t.videoUrl); } }}>
+              <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
+            </div>
+            <div className="video-card-info">
+              <div className="video-card-text" data-en={t.text} data-ar={t.textAr}>{t.text}</div>
+              <div className="video-card-name">{t.name}</div>
+              <div className="video-card-role" data-en={t.role} data-ar={t.roleAr}>{t.role}</div>
+            </div>
           </div>
-          <div className="video-card-info">
-            <div className="video-card-text" data-en="Video testimonial coming soon" data-ar="شهادة فيديو قريباً">Video testimonial coming soon</div>
-            <div className="video-card-name">Student A</div>
-            <div className="video-card-role" data-en="Mentorship Graduate" data-ar="خريج برنامج التدريب">Mentorship Graduate</div>
-          </div>
-        </div>
-
-        <div className="video-card">
-          <div className="video-card-glow"></div>
-          <div className="video-card-bg"></div>
-          <div className="video-card-quote">"</div>
-          <div className="video-card-play">
-            <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
-          </div>
-          <div className="video-card-info">
-            <div className="video-card-text" data-en="Video testimonial coming soon" data-ar="شهادة فيديو قريباً">Video testimonial coming soon</div>
-            <div className="video-card-name">Student B</div>
-            <div className="video-card-role" data-en="Mentorship Graduate" data-ar="خريج برنامج التدريب">Mentorship Graduate</div>
-          </div>
-        </div>
-
-        <div className="video-card">
-          <div className="video-card-glow"></div>
-          <div className="video-card-bg"></div>
-          <div className="video-card-quote">"</div>
-          <div className="video-card-play">
-            <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
-          </div>
-          <div className="video-card-info">
-            <div className="video-card-text" data-en="Video testimonial coming soon" data-ar="شهادة فيديو قريباً">Video testimonial coming soon</div>
-            <div className="video-card-name">Student C</div>
-            <div className="video-card-role" data-en="Mentorship Graduate" data-ar="خريج برنامج التدريب">Mentorship Graduate</div>
-          </div>
-        </div>
-
-        <div className="video-card">
-          <div className="video-card-glow"></div>
-          <div className="video-card-bg"></div>
-          <div className="video-card-quote">"</div>
-          <div className="video-card-play">
-            <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>
-          </div>
-          <div className="video-card-info">
-            <div className="video-card-text" data-en="Video testimonial coming soon" data-ar="شهادة فيديو قريباً">Video testimonial coming soon</div>
-            <div className="video-card-name">Student D</div>
-            <div className="video-card-role" data-en="Mentorship Graduate" data-ar="خريج برنامج التدريب">Mentorship Graduate</div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   </div>
@@ -1123,11 +904,13 @@ export default function ClientPage({
   <div className="contact-inner">
     <div className="eyebrow" data-en="Start a Project" data-ar="ابدأ مشروع">Start a Project</div>
     <h2 className="heading" data-en="Let's create something." data-ar="هيا نبدع معاً">Let's create something.</h2>
-    <p className="contact-tagline" data-en="Have a project in mind? Book a free 30-min discovery call — no pressure, just a real conversation about your vision." data-ar="عندك مشروع في بالك؟ احجز جلسة استكشاف مجانية ٣٠ دقيقة — بدون أي ضغط، مجرد حوار حقيقي حول رؤيتك.">Have a project in mind? Book a free 30-min discovery call — no pressure, just a real conversation about your vision.</p>
+    <p className="contact-tagline" data-en={contactData?.tagline || "Have a project in mind? Book a free 30-min discovery call — no pressure, just a real conversation about your vision."} data-ar={contactData?.taglineAr || "عندك مشروع في بالك؟ احجز جلسة استكشاف مجانية ٣٠ دقيقة — بدون أي ضغط، مجرد حوار حقيقي حول رؤيتك."}>
+      {contactData?.tagline || "Have a project in mind? Book a free 30-min discovery call — no pressure, just a real conversation about your vision."}
+    </p>
 
     {/* Two main CTAs */}
     <div className="contact-actions">
-      <a href="#" onClick={() => { if(typeof window !== "undefined" && window.qbOpen) { window.qbOpen();return false; } } } className="contact-cta-primary">
+      <a href={contactData?.whatsapp ? `https://wa.me/${contactData.whatsapp.replace(/\D/g, '')}` : "#"} onClick={(e) => { if (!contactData?.whatsapp) { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } } }} className="contact-cta-primary" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         <div className="contact-cta-text">
           <div className="contact-cta-label" data-en="Quick Chat" data-ar="محادثة سريعة">Quick Chat</div>
@@ -1135,7 +918,7 @@ export default function ClientPage({
         </div>
       </a>
 
-      <a href="#" onClick={() => { if(typeof window !== "undefined" && window.qbOpen) { window.qbOpen();return false; } } } className="contact-cta-secondary">
+      <a href={contactData?.email ? `mailto:${contactData.email}` : "#"} onClick={(e) => { if (!contactData?.email) { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } } }} className="contact-cta-secondary">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
           <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
           <polyline points="22,6 12,13 2,6"/>
@@ -1145,46 +928,24 @@ export default function ClientPage({
           <div className="contact-cta-action" data-en="Send via Email" data-ar="ارسل عبر الإيميل">Send via Email</div>
         </div>
       </a>
-
-      <a href="/book" className="contact-cta-secondary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        <div className="contact-cta-text">
-          <div className="contact-cta-label" data-en="Meeting" data-ar="اجتماع">Meeting</div>
-          <div className="contact-cta-action" data-en="Book a Session" data-ar="احجز موعد">Book a Session</div>
-        </div>
-      </a>
     </div>
 
     {/* Quick FAQ */}
     <div className="contact-faq">
-      <div className="faq-item">
-        <div className="faq-q" data-en="How fast do you reply?" data-ar="بترد بسرعة قد إيه؟">How fast do you reply?</div>
-        <div className="faq-a" data-en="Within 24 hours — usually much faster." data-ar="خلال ٢٤ ساعة — وغالباً أسرع بكتير.">Within 24 hours — usually much faster.</div>
-      </div>
-      <div className="faq-item">
-        <div className="faq-q" data-en="Do you work remote?" data-ar="بتشتغل عن بُعد؟">Do you work remote?</div>
-        <div className="faq-a" data-en="Yes — I work with clients globally across 14 countries." data-ar="أيوه — بشتغل مع عملاء حول العالم في ١٤ دولة.">Yes — I work with clients globally across 14 countries.</div>
-      </div>
-      <div className="faq-item">
-        <div className="faq-q" data-en="What's your typical budget?" data-ar="ما هي ميزانيتك المعتادة؟">What's your typical budget?</div>
-        <div className="faq-a" data-en="Flexible — let's discuss your scope first, then I'll propose options." data-ar="مرنة — هنناقش نطاق المشروع الأول، وبعدين هقترح خيارات.">Flexible — let's discuss your scope first, then I'll propose options.</div>
-      </div>
-      <div className="faq-item">
-        <div className="faq-q" data-en="Languages?" data-ar="اللغات؟">Languages?</div>
-        <div className="faq-a" data-en="Bilingual production — Arabic & English fluently." data-ar="إنتاج ثنائي اللغة — عربي وإنجليزي بطلاقة.">Bilingual production — Arabic & English fluently.</div>
-      </div>
+      {(faqsData || []).map((faq, idx) => (
+        <div key={idx} className="faq-item">
+          <div className="faq-q" data-en={faq.question} data-ar={faq.questionAr}>{faq.question}</div>
+          <div className="faq-a" data-en={faq.answer} data-ar={faq.answerAr}>{faq.answer}</div>
+        </div>
+      ))}
     </div>
 
     <div className="socials">
-      <a href="#" className="soc" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
-      <a href="#" className="soc" aria-label="TikTok"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
-      <a href="#" className="soc" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
-      <a href="#" className="soc" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg></a>
+      {(socialData || []).map((soc, idx) => (
+        <a key={idx} href={soc.url} className="soc" aria-label={soc.platform} target="_blank" rel="noopener noreferrer">
+          {getSocialIcon(soc.platform)}
+        </a>
+      ))}
     </div>
   </div>
 </section>
@@ -1418,7 +1179,7 @@ export default function ClientPage({
 {/* ═══════════════════ GLOBAL SOCIAL RAIL ═══════════════════ */}
 <div className="social-rail" id="socialRail">
   <div className="social-rail-track"></div>
-  {socialData.map((social) => {
+  {(socialData || []).map((social) => {
     // Basic mapping from platform to icon
     let iconClass = "fa-solid fa-link";
     if (social.platform.toLowerCase().includes('instagram')) iconClass = "fa-brands fa-instagram";
@@ -1428,7 +1189,7 @@ export default function ClientPage({
     else if (social.platform.toLowerCase().includes('facebook')) iconClass = "fa-brands fa-facebook";
     else if (social.platform.toLowerCase().includes('twitter') || social.platform.toLowerCase().includes('x')) iconClass = "fa-brands fa-x-twitter";
     else if (social.platform.toLowerCase().includes('github')) iconClass = "fa-brands fa-github";
-    
+
     return (
       <a key={social.id} href={social.url} target="_blank" rel="noopener noreferrer" className="social-rail-dot" aria-label={social.platform}>
         <i className={social.icon || iconClass} style={{ fontSize: '1.2rem', color: 'currentColor' }}></i>

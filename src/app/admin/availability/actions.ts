@@ -11,10 +11,10 @@ export async function saveWeeklyAvailability(formData: FormData) {
         if (!payload) throw new Error('No payload found');
         const items = JSON.parse(payload as string);
 
-        // We can just clear the whole availability table and re-insert 
+        // We can just clear the whole availability table and re-insert
         // since it's a small set of rows.
         await db.delete(availability);
-        
+
         if (items.length > 0) {
             const dataToInsert = items.map((item: any) => ({
                 dayOfWeek: item.day_of_week,
@@ -44,7 +44,7 @@ export async function addOverride(formData: FormData) {
             slots,
         }).onConflictDoUpdate({
             target: availabilityOverrides.date,
-            set: { slots, updatedAt: new Date() }
+            set: { slots }
         });
 
         revalidatePath('/admin/availability');

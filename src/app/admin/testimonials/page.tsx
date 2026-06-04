@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button, Card, Input, Modal, Switch, Table, TextArea } from "@heroui/react";
+import { Button, Card, Input, Modal, Switch, Table, TextArea, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { getAllTestimonials, upsertTestimonial, deleteTestimonial } from './actions';
 import toast from 'react-hot-toast';
+import ImageUploadField from '@/components/admin/ImageUploadField';
 
 export default function TestimonialsAdminPage() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<any | null>(null);
-  
+
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -48,13 +49,13 @@ export default function TestimonialsAdminPage() {
     if (editingItem?.id) {
       formData.append('id', editingItem.id);
     }
-    
+
     // Convert switch values manually if needed, but Switch passes "true" if selected
-    // Note: FormData handles switches that are "on" by passing their value. 
+    // Note: FormData handles switches that are "on" by passing their value.
     // We handle it gracefully in the server action.
 
     const res = await upsertTestimonial(formData);
-    
+
     if (!res || !res.success) {
       toast.error('Failed to save testimonial');
     } else {
@@ -65,7 +66,7 @@ export default function TestimonialsAdminPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto text-white">
+    <div className="max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Testimonials</h1>
         <Button onPress={handleAddNew} className="bg-blue-600">
@@ -80,39 +81,41 @@ export default function TestimonialsAdminPage() {
               No records found.
             </div>
           ) : (
-            <Table aria-label="Testimonials">
-              <Table.Header>
-                <Table.Column>ORDER</Table.Column>
-                <Table.Column>CLIENT NAME</Table.Column>
-                <Table.Column>RATING</Table.Column>
-                <Table.Column>STATUS</Table.Column>
-                <Table.Column>ACTIONS</Table.Column>
-              </Table.Header>
-              <Table.Body items={testimonials}>
+            <Table>
+              <Table.Content aria-label="Testimonials">
+              <TableHeader>
+                <TableColumn>ORDER</TableColumn>
+                <TableColumn>CLIENT NAME</TableColumn>
+                <TableColumn>RATING</TableColumn>
+                <TableColumn>STATUS</TableColumn>
+                <TableColumn>ACTIONS</TableColumn>
+              </TableHeader>
+              <TableBody items={testimonials}>
                 {(item: any) => (
-                  <Table.Row key={item.id}>
-                    <Table.Cell>{item.order}</Table.Cell>
-                    <Table.Cell>
+                  <TableRow key={item.id}>
+                    <TableCell>{item.order}</TableCell>
+                    <TableCell>
                       <div>
                         <div className="font-medium">{item.name}</div>
                         <div className="text-xs text-gray-400">{item.role || 'No role'}</div>
                       </div>
-                    </Table.Cell>
-                    <Table.Cell>{item.rating} / 5</Table.Cell>
-                    <Table.Cell>
+                    </TableCell>
+                    <TableCell>{item.rating} / 5</TableCell>
+                    <TableCell>
                       <span className={`px-2 py-1 rounded-full text-xs ${item.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
                         {item.active ? 'Active' : 'Inactive'}
                       </span>
-                    </Table.Cell>
-                    <Table.Cell>
+                    </TableCell>
+                    <TableCell>
                       <div className="flex justify-center gap-2">
                         <Button size="sm" variant="secondary" onPress={() => handleEdit(item)}>Edit</Button>
                         <Button size="sm" variant="secondary" onPress={() => handleDelete(item.id)}>Delete</Button>
                       </div>
-                    </Table.Cell>
-                  </Table.Row>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </Table.Body>
+              </TableBody>
+              </Table.Content>
             </Table>
           )}
         </Card.Content>
@@ -121,21 +124,21 @@ export default function TestimonialsAdminPage() {
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
         <Modal.Dialog>
           {({ close: onClose }: any) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-8">
               <Modal.Header>{editingItem ? 'Edit Testimonial' : 'Add Testimonial'}</Modal.Header>
               <Modal.Body className="py-6 max-h-[70vh] overflow-y-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Order</label>
-                    <Input 
-                      name="order" 
+                    <Input
+                      name="order"
                       type="number"
-                      defaultValue={editingItem?.order || 0} 
-                      required 
+                      defaultValue={editingItem?.order || 0}
+                      required
                       variant="secondary"
                     />
                   </div>
-                  
+
                   <div className="flex flex-col gap-2 px-2 justify-center">
                     <Switch name="active" defaultSelected={editingItem?.active !== false} value="true">
                       Active
@@ -147,63 +150,61 @@ export default function TestimonialsAdminPage() {
                       Is Video Testimonial
                     </Switch>
                   </div>
-                  
+
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
-                    <Input 
-                      name="name" 
-                      defaultValue={editingItem?.name} 
-                      required 
-                      variant="secondary"
-                    />
-                  </div>
-                  
-                  <div className="mb-2">
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Role / Company</label>
-                    <Input 
-                      name="role" 
-                      defaultValue={editingItem?.role} 
+                    <Input
+                      name="name"
+                      defaultValue={editingItem?.name}
+                      required
                       variant="secondary"
                     />
                   </div>
 
                   <div className="mb-2">
-                    <label className="block text-sm font-medium text-gray-300 mb-1">Avatar URL</label>
-                    <Input 
-                      name="avatar" 
-                      defaultValue={editingItem?.avatar} 
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Role / Company</label>
+                    <Input
+                      name="role"
+                      defaultValue={editingItem?.role}
                       variant="secondary"
                     />
                   </div>
+
+                  <ImageUploadField
+                    name="avatar"
+                    label="Avatar"
+                    defaultValue={editingItem?.avatar}
+                    className="mb-2"
+                  />
 
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Rating (1-5)</label>
-                    <Input 
-                      name="rating" 
+                    <Input
+                      name="rating"
                       type="number"
                       min={1}
                       max={5}
-                      defaultValue={editingItem?.rating || 5} 
+                      defaultValue={editingItem?.rating || 5}
                       variant="secondary"
                     />
                   </div>
-                  
+
                   <div className="mb-2 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Testimonial Text (English)</label>
-                    <TextArea 
-                      name="text" 
-                      defaultValue={editingItem?.text} 
+                    <TextArea
+                      name="text"
+                      defaultValue={editingItem?.text}
                       required
                       rows={3}
                       variant="secondary"
                     />
                   </div>
-                  
+
                   <div className="mb-2 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Testimonial Text (Arabic)</label>
-                    <TextArea 
-                      name="textAr" 
-                      defaultValue={editingItem?.textAr} 
+                    <TextArea
+                      name="textAr"
+                      defaultValue={editingItem?.textAr}
                       rows={3}
                       dir="rtl"
                       variant="secondary"
@@ -212,20 +213,20 @@ export default function TestimonialsAdminPage() {
 
                   <div className="mb-2 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Video URL (if applicable)</label>
-                    <Input 
-                      name="videoUrl" 
-                      defaultValue={editingItem?.videoUrl} 
+                    <Input
+                      name="videoUrl"
+                      defaultValue={editingItem?.videoUrl}
                       variant="secondary"
                       placeholder="https://..."
                     />
                   </div>
-                  
+
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Grid Row Size</label>
-                    <Input 
-                      name="row" 
+                    <Input
+                      name="row"
                       type="number"
-                      defaultValue={editingItem?.row || 1} 
+                      defaultValue={editingItem?.row || 1}
                       variant="secondary"
                     />
                   </div>

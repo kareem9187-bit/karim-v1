@@ -68,9 +68,9 @@ export function Navbar() {
 
   return (
     <>
-      <nav className={ixed z-[100] flex items-center gap-2 p-2 backdrop-blur-[20px] saturate-[160%] border rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.4),inset_0_1px_0_var(--color-border)] md:top-6 md:left-1/2 md:-translate-x-1/2 md:w-auto w-[calc(100%-32px)] top-4 left-4 right-4 translate-x-0 justify-between px-4 py-2 transition-colors duration-300 }>
+      <nav className={"fixed z-[100] flex items-center gap-2 p-2 backdrop-blur-[20px] saturate-[160%] border rounded-full shadow-[0_12px_40px_rgba(0,0,0,0.4),inset_0_1px_0_var(--color-border)] md:top-6 md:left-1/2 md:-translate-x-1/2 md:w-auto w-[calc(100%-32px)] top-4 left-4 right-4 translate-x-0 justify-between px-4 py-2 transition-colors duration-300"}>
         {/* Shine line */}
-        <div className={bsolute top-[1px] left-4 right-4 h-px bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.35)] to-transparent pointer-events-none transition-opacity duration-300 } />
+        <div className={"absolute top-[1px] left-4 right-4 h-px bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.35)] to-transparent pointer-events-none transition-opacity duration-300"} />
 
         {/* Logo */}
         <Link
@@ -83,7 +83,7 @@ export function Navbar() {
 
         {/* Desktop links */}
         <div className="items-center gap-2 hidden md:flex">
-          <button className={px-4 py-2 border rounded-full cursor-pointer text-[12px] font-medium tracking-[0.5px] transition-all duration-[250ms] hover:bg-[var(--color-border)] }>
+          <button className={"px-4 py-2 border rounded-full cursor-pointer text-[12px] font-medium tracking-[0.5px] transition-all duration-[250ms] hover:bg-[var(--color-border)]"}>
             العربية
           </button>
           <Link
@@ -101,18 +101,18 @@ export function Navbar() {
         {/* Hamburger - Now visible on both desktop and mobile */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className={lex min-w-[48px] min-h-[48px] md:min-w-[40px] md:min-h-[40px] rounded-full border cursor-pointer flex-col items-center justify-center gap-[4px] transition-all duration-[250ms] }
+          className={"flex min-w-[48px] min-h-[48px] md:min-w-[40px] md:min-h-[40px] rounded-full border cursor-pointer flex-col items-center justify-center gap-[4px] transition-all duration-[250ms]"}
         >
-          <span className={lock w-5 md:w-4 h-[1.5px] rounded-full transition-all duration-300 } />
-          <span className={lock w-5 md:w-4 h-[1.5px] rounded-full transition-all duration-300 } />
-          <span className={lock w-5 md:w-4 h-[1.5px] rounded-full transition-all duration-300 } />
+          <span className={"block w-5 md:w-4 h-[1.5px] rounded-full transition-all duration-300"} />
+          <span className={"block w-5 md:w-4 h-[1.5px] rounded-full transition-all duration-300"} />
+          <span className={"block w-5 md:w-4 h-[1.5px] rounded-full transition-all duration-300"} />
         </button>
       </nav>
 
       {/* Fullscreen Menu Overlay */}
       <div
         ref={overlayRef}
-        className={menu-overlay }
+        className="menu-overlay"
       >
         <div className="menu-overlay-content">
           <div>

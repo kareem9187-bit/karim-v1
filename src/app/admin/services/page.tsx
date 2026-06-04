@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button, Card, Input, Modal, Switch, Table, TextArea } from "@heroui/react";
+import { Button, Card, Input, Modal, Switch, Table, TextArea, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { getAllServices, upsertService, deleteService } from './actions';
 import toast from 'react-hot-toast';
 
@@ -9,7 +9,7 @@ export default function ServicesAdminPage() {
   const [services, setServices] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingService, setEditingService] = useState<any | null>(null);
-  
+
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -48,9 +48,9 @@ export default function ServicesAdminPage() {
     if (editingService?.id) {
       formData.append('id', editingService.id);
     }
-    
+
     const res = await upsertService(formData);
-    
+
     if (!res || !res.success) {
       toast.error('Failed to save service');
     } else {
@@ -61,7 +61,7 @@ export default function ServicesAdminPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto text-white">
+    <div className="max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Services</h1>
         <Button onPress={handleAddNew} className="bg-blue-600">
@@ -76,36 +76,35 @@ export default function ServicesAdminPage() {
               No records found.
             </div>
           ) : (
-            <Table 
-            aria-label="Services" 
-            
-          >
-            <Table.Header>
-              <Table.Column>ORDER</Table.Column>
-              <Table.Column>TITLE</Table.Column>
-              <Table.Column>STATUS</Table.Column>
-              <Table.Column >ACTIONS</Table.Column>
-            </Table.Header>
-            <Table.Body items={services}>
+            <Table>
+              <Table.Content aria-label="Services">
+            <TableHeader>
+              <TableColumn>ORDER</TableColumn>
+              <TableColumn>TITLE</TableColumn>
+              <TableColumn>STATUS</TableColumn>
+              <TableColumn >ACTIONS</TableColumn>
+            </TableHeader>
+            <TableBody items={services}>
               {(item: any) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell>{item.order}</Table.Cell>
-                  <Table.Cell className="font-medium">{item.title}</Table.Cell>
-                  <Table.Cell>
+                <TableRow key={item.id}>
+                  <TableCell>{item.order}</TableCell>
+                  <TableCell className="font-medium">{item.title}</TableCell>
+                  <TableCell>
                     <span className={`px-2 py-1 rounded-full text-xs ${item.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
                       {item.active ? 'Active' : 'Inactive'}
                     </span>
-                  </Table.Cell>
-                  <Table.Cell>
+                  </TableCell>
+                  <TableCell>
                     <div className="flex justify-center gap-2">
                       <Button size="sm" variant="secondary" onPress={() => handleEdit(item)}>Edit</Button>
                       <Button size="sm" variant="secondary" onPress={() => handleDelete(item.id)}>Delete</Button>
                     </div>
-                  </Table.Cell>
-                </Table.Row>
+                  </TableCell>
+                </TableRow>
               )}
-            </Table.Body>
-          </Table>
+            </TableBody>
+              </Table.Content>
+            </Table>
           )}
         </Card.Content>
       </Card>
@@ -113,70 +112,70 @@ export default function ServicesAdminPage() {
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}  >
         <Modal.Dialog>
           {({ close: onClose }: any) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-8">
               <Modal.Header>{editingService ? 'Edit Service' : 'Add New Service'}</Modal.Header>
               <Modal.Body className="py-6 max-h-[70vh] overflow-y-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Order</label><Input 
-                    name="order" 
-                     
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Order</label><Input
+                    name="order"
+
                     type="number"
-                    defaultValue={editingService?.order || 0} 
-                    required 
+                    defaultValue={editingService?.order || 0}
+                    required
                     variant="secondary"
-                    
+
                    /></div>
                   <div className="flex items-center px-2">
                     <Switch name="active" defaultSelected={editingService?.active !== false} value="true">
                       Active
                     </Switch>
                   </div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (English)</label><Input 
-                    name="title" 
-                     
-                    defaultValue={editingService?.title} 
-                    required 
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (English)</label><Input
+                    name="title"
+
+                    defaultValue={editingService?.title}
+                    required
                     variant="secondary"
-                    
+
                    /></div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (Arabic)</label><Input 
-                    name="titleAr" 
-                     
-                    defaultValue={editingService?.titleAr} 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (Arabic)</label><Input
+                    name="titleAr"
+
+                    defaultValue={editingService?.titleAr}
                     dir="rtl"
                     variant="secondary"
-                    
+
                    /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Description (English)</label><TextArea 
-                    name="description" 
-                     
-                    defaultValue={editingService?.description} 
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Description (English)</label><TextArea
+                    name="description"
+
+                    defaultValue={editingService?.description}
                     required
                     rows={3}
                     className="md:col-span-2"
                     variant="secondary"
-                    
+
                    /></div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Description (Arabic)</label><TextArea 
-                    name="descriptionAr" 
-                     
-                    defaultValue={editingService?.descriptionAr} 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Description (Arabic)</label><TextArea
+                    name="descriptionAr"
+
+                    defaultValue={editingService?.descriptionAr}
                     rows={3}
                     dir="rtl"
                     className="md:col-span-2"
                     variant="secondary"
-                    
+
                    /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Icon Name or SVG</label><Input 
-                    name="icon" 
-                     
-                    defaultValue={editingService?.icon} 
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Icon Name or SVG</label><Input
+                    name="icon"
+
+                    defaultValue={editingService?.icon}
                     className="md:col-span-2"
                     variant="secondary"
-                    
+
                    /></div>
                 </div>
               </Modal.Body>

@@ -1,51 +1,59 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { db } from '@/db'
+import { eventTypes, availabilityOverrides, availability, bookings } from '@/db/schema'
+import { eq } from 'drizzle-orm'
 import { Resend } from 'resend'
-import { BookingConfirmation } from '@/emails/BookingConfirmation'
+import { createGoogleMeetEvent } from '@/utils/google-calendar'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+function getCairoOffset(date: Date) {
+    return '+03:00';
+}
 
 export async function getAvailableSlots(dateStr: string, durationMinutes: number, eventTypeId?: string) {
-    const supabase = await createClient();
     const date = new Date(dateStr);
     const dayOfWeek = date.getDay();
 
-    // 0. Fetch event type settings if provided (for buffer/limits/increments)
     let bufferBefore = 0, bufferAfter = 0, maxPerDay: number | null = null, increment = 30, minNoticeHours = 0;
+
     if (eventTypeId) {
-        const { data: et } = await supabase.from('event_types').select('buffer_before, buffer_after, max_per_day, start_time_increment, min_notice_hours').eq('id', eventTypeId).single();
+        const et = await db.query.eventTypes.findFirst({
+            where: eq(eventTypes.id, eventTypeId)
+        });
         if (et) {
-            bufferBefore = et.buffer_before || 0;
-            bufferAfter = et.buffer_after || 0;
-            maxPerDay = et.max_per_day;
-            increment = et.start_time_increment || 30;
-            minNoticeHours = et.min_notice_hours || 0;
+            bufferBefore = et.bufferBefore || 0;
+            bufferAfter = et.bufferAfter || 0;
+            maxPerDay = et.maxPerDay;
+            increment = et.startTimeIncrement || 30;
+            minNoticeHours = et.minNoticeHours || 0;
         }
     }
 
-    // 0.5 Check for date overrides
-    const { data: overrides } = await supabase.from('availability_overrides').select('*').eq('date', dateStr);
+    const override = await db.query.availabilityOverrides.findFirst({
+        where: eq(availabilityOverrides.date, dateStr)
+    });
+
     let useOverride = false;
     let overrideSlots: any[] = [];
-    if (overrides && overrides.length > 0) {
+    if (override) {
         useOverride = true;
-        overrideSlots = overrides[0].slots || [];
-        if (overrideSlots.length === 0) return []; // Date marked as unavailable
+        overrideSlots = override.slots || [];
+        if (overrideSlots.length === 0) return [];
     }
 
-    // 1. Get availability for this day (or override)
     let segments: { start_time: string; end_time: string }[] = [];
     if (useOverride) {
         segments = overrideSlots.map((s: any) => ({ start_time: s.start, end_time: s.end }));
     } else {
-        const { data: availabilities } = await supabase.from('availability').select('*').eq('day_of_week', dayOfWeek);
+        const availabilities = await db.query.availability.findMany({
+            where: eq(availability.dayOfWeek, dayOfWeek)
+        });
         if (!availabilities || availabilities.length === 0) return [];
-        segments = availabilities.map(a => ({ start_time: a.start_time, end_time: a.end_time }));
+        segments = availabilities.map(a => ({ start_time: a.startTime, end_time: a.endTime }));
     }
 
-    // 2. Generate all possible slots
-    const { getCairoOffset } = await import('@/utils/google');
     const offset = getCairoOffset(new Date(dateStr));
     const slots: string[] = [];
     const now = new Date();
@@ -67,44 +75,33 @@ export async function getAvailableSlots(dateStr: string, durationMinutes: number
 
     slots.sort();
 
-    // 2.5 Filter Google Calendar conflicts
-    // Using a separate variable instead of mutating slots (mutation via length=0/push is broken in server action)
     let filteredSlots: string[] = [...slots];
-    try {
-        const { checkCalendarConflicts } = await import('@/utils/google');
-        filteredSlots = await checkCalendarConflicts(dateStr, slots, durationMinutes);
-    } catch (e) {
-        console.error("Google Calendar conflict check failed, continuing without it.", e);
-    }
 
-    // 3. Fetch existing local bookings
-    const { data: bookings } = await supabase.from('bookings').select('start_time, end_time').eq('booking_date', dateStr);
+    const dayBookings = await db.query.bookings.findMany({
+        where: eq(bookings.bookingDate, dateStr)
+    });
 
-    if (!bookings || bookings.length === 0) {
+    if (!dayBookings || dayBookings.length === 0) {
         if (maxPerDay !== null && maxPerDay <= 0) return [];
         return filteredSlots;
     }
 
-
-
-    // Check max_per_day
     if (maxPerDay !== null) {
         const eventBookings = eventTypeId
-            ? (await supabase.from('bookings').select('id').eq('booking_date', dateStr).eq('event_type_id', eventTypeId)).data?.length || 0
-            : bookings.length;
+            ? dayBookings.filter(b => b.eventTypeId === eventTypeId).length
+            : dayBookings.length;
         if (eventBookings >= maxPerDay) return [];
     }
 
-    // 4. Filter overlapping (with local bookings + buffer support)
     const finalAvailableSlots = filteredSlots.filter(slot => {
         const slotStart = new Date(`${dateStr}T${slot}:00${offset}`);
         const slotEnd = new Date(slotStart.getTime() + durationMinutes * 60000);
         const bufferedStart = new Date(slotStart.getTime() - bufferBefore * 60000);
         const bufferedEnd = new Date(slotEnd.getTime() + bufferAfter * 60000);
 
-        for (const booking of bookings) {
-            const bookingStart = new Date(`${dateStr}T${booking.start_time}${offset}`);
-            const bookingEnd = new Date(`${dateStr}T${booking.end_time}${offset}`);
+        for (const booking of dayBookings) {
+            const bookingStart = new Date(`${dateStr}T${booking.startTime}${offset}`);
+            const bookingEnd = new Date(`${dateStr}T${booking.endTime}${offset}`);
 
             if (
                 (bufferedStart >= bookingStart && bufferedStart < bookingEnd) ||
@@ -126,99 +123,78 @@ export async function submitBooking(formData: FormData) {
     const start_time = formData.get('time') as string;
     const duration_minutes = parseInt(formData.get('duration_minutes') as string);
 
-    // Support both old (name) and new (first_name + last_name) forms
     const firstName = formData.get('first_name') as string || '';
     const lastName = formData.get('last_name') as string || '';
     const client_name = (formData.get('name') as string) || `${firstName} ${lastName}`.trim();
     const client_email = formData.get('email') as string;
     const notes = formData.get('notes') as string;
 
-    // Calculate end time using correct timezone offset
-    const { getCairoOffset } = await import('@/utils/google');
     const offset = getCairoOffset(new Date(booking_date));
     const startDate = new Date(`${booking_date}T${start_time}:00${offset}`);
     const endDate = new Date(startDate.getTime() + duration_minutes * 60000);
     const end_time = endDate.toTimeString().substring(0, 8);
 
-    const supabase = await createClient();
-
-    // Verify slot is still available
     const availableSlots = await getAvailableSlots(booking_date, duration_minutes, event_type_id);
     if (!availableSlots.includes(start_time.substring(0, 5))) {
         return { error: 'Sorry, this time slot was just booked by someone else. Please select another.' };
     }
 
-    // Fetch event type for title
-    const { data: eventType } = await supabase.from('event_types').select('title, description').eq('id', event_type_id).single();
+    const eventType = await db.query.eventTypes.findFirst({
+        where: eq(eventTypes.id, event_type_id)
+    });
 
-    // Build custom answers from questions
     const answers: Record<string, string> = {};
     if (notes) answers.notes = notes;
-    // Collect custom question answers
     for (const [key, val] of formData.entries()) {
         if (key.startsWith('question_')) {
             answers[key] = val as string;
         }
     }
 
-    // Create Google Calendar Event
     let meeting_link = 'Not generated yet';
-    let calendar_event_link = '';
     try {
-        const { createGoogleCalendarEvent } = await import('@/utils/google');
-        const googleEvent = await createGoogleCalendarEvent({
+        const googleEvent = await createGoogleMeetEvent({
             title: `${eventType?.title || 'Meeting'} with ${client_name}`,
             description: `Booked via website.\nClient: ${client_name} (${client_email})\nAnswers: ${JSON.stringify(answers)}`,
-            startTime: startDate,
-            endTime: endDate,
-            clientEmail: client_email
+            startTime: startDate.toISOString(),
+            endTime: endDate.toISOString(),
+            guestEmail: client_email
         });
-        if (googleEvent?.hangoutLink) meeting_link = googleEvent.hangoutLink;
-        if (googleEvent?.htmlLink) calendar_event_link = googleEvent.htmlLink;
-        // Fallback: if no Meet link, use calendar link
-        if (meeting_link === 'Not generated yet' && calendar_event_link) {
-            meeting_link = calendar_event_link;
+        if (googleEvent?.meetLink) {
+            meeting_link = googleEvent.meetLink;
         }
     } catch (e: any) {
         console.error("Failed to create Google Calendar event:", e?.message || e);
     }
 
-    // Insert booking
-    const { error } = await supabase.from('bookings').insert([{
-        event_type_id,
-        booking_date,
-        start_time: `${start_time}:00`,
-        end_time,
-        client_name,
-        client_email,
-        custom_answers: answers,
-        payment_status: 'pending',
-        meeting_link
-    }]);
-
-    if (error) {
+    try {
+        await db.insert(bookings).values({
+            eventTypeId: event_type_id,
+            bookingDate: booking_date,
+            startTime: `${start_time}:00`,
+            endTime: end_time,
+            clientName: client_name,
+            clientEmail: client_email,
+            customAnswers: answers,
+            paymentStatus: 'pending',
+            meetingLink: meeting_link
+        });
+    } catch (error) {
         console.error('Booking insertion error:', error);
         return { error: 'There was an issue processing your booking.' };
     }
 
-    // Send confirmation email
-    try {
-        const { render } = await import('@react-email/render');
-        const emailHtml = await render(BookingConfirmation({
-            name: client_name,
-            date: booking_date,
-            time: start_time,
-            meetLink: meeting_link
-        }));
-
-        await resend.emails.send({
-            from: 'Muhammed Mekky <contact@muhammedmekky.com>',
-            to: client_email,
-            subject: `Booking Confirmed — ${eventType?.title || 'Meeting'}`,
-            html: emailHtml
-        });
-    } catch (emailError: any) {
-        console.error('Failed to send booking confirmation email:', emailError);
+    if (resend) {
+        try {
+            await resend.emails.send({
+                from: 'Muhammed Mekky <contact@muhammedmekky.com>',
+                to: client_email,
+                subject: `Booking Confirmed — ${eventType?.title || 'Meeting'}`,
+                html: `<p>Hi ${client_name},</p><p>Your booking for ${eventType?.title || 'Meeting'} on ${booking_date} at ${start_time} is confirmed.</p><p>Meet link: ${meeting_link}</p>`
+            });
+        } catch (emailError: any) {
+            console.error('Failed to send booking confirmation email:', emailError);
+        }
     }
 
     return { success: true };

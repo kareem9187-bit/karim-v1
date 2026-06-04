@@ -8,7 +8,8 @@ export const metadata = { title: 'Availability | Admin' };
 
 export default async function AvailabilityPage() {
     const availabilities = await db.select().from(availability).orderBy(asc(availability.dayOfWeek));
-    const overrides = await db.select().from(availabilityOverrides).orderBy(desc(availabilityOverrides.date));
+    const overridesRaw = await db.select().from(availabilityOverrides).orderBy(desc(availabilityOverrides.date));
+    const overrides = overridesRaw.map(o => ({ ...o, slots: (o.slots as any) || [] }));
 
     return (
         <div>
@@ -19,9 +20,9 @@ export default async function AvailabilityPage() {
                 </div>
             </div>
 
-            <AvailabilityForm 
-                availabilities={availabilities || []} 
-                overrides={overrides || []} 
+            <AvailabilityForm
+                availabilities={availabilities || []}
+                overrides={overrides || []}
             />
         </div>
     );

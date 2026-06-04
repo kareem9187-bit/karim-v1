@@ -21,7 +21,7 @@ export async function upsertFaq(formData: FormData) {
     questionAr: (formData.get('questionAr') as string) || null,
     answer: formData.get('answer') as string,
     answerAr: (formData.get('answerAr') as string) || null,
-    active: formData.get('active') !== 'false',
+    active: formData.get('active') === 'true',
   };
 
   if (id) {
@@ -30,6 +30,7 @@ export async function upsertFaq(formData: FormData) {
     await db.insert(faqs).values(data);
   }
 
+  revalidatePath('/');
   revalidatePath('/contact');
   revalidatePath('/admin/faq');
   return { success: true };
@@ -37,6 +38,7 @@ export async function upsertFaq(formData: FormData) {
 
 export async function deleteFaq(id: string) {
   await db.delete(faqs).where(eq(faqs.id, id));
+  revalidatePath('/');
   revalidatePath('/contact');
   revalidatePath('/admin/faq');
   return { success: true };
@@ -48,6 +50,7 @@ export async function reorderFaqs(ids: string[]) {
       db.update(faqs).set({ order: index + 1 }).where(eq(faqs.id, id))
     )
   );
+  revalidatePath('/');
   revalidatePath('/contact');
   return { success: true };
 }

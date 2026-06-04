@@ -17,7 +17,7 @@ export async function upsertStat(formData: FormData) {
     label: formData.get('label') as string,
     labelAr: formData.get('labelAr') as string || null,
     icon: formData.get('icon') as string || null,
-    active: formData.get('active') !== 'false',
+    active: formData.get('active') === 'true',
   };
 
   if (id) {

@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { works } from '@/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { and, eq, asc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
 export async function getWorks() {
@@ -14,7 +14,7 @@ export async function getAllWorks() {
 }
 
 export async function getWorkBySlug(slug: string) {
-  const [work] = await db.select().from(works).where(eq(works.slug, slug)).limit(1);
+  const [work] = await db.select().from(works).where(and(eq(works.slug, slug), eq(works.active, true))).limit(1);
   return work ?? null;
 }
 
@@ -33,7 +33,7 @@ export async function upsertWork(formData: FormData) {
     videoUrl: (formData.get('videoUrl') as string) || null,
     featured: formData.get('featured') === 'true',
     comingSoon: formData.get('comingSoon') === 'true',
-    active: formData.get('active') !== 'false',
+    active: formData.get('active') === 'true',
     serviceId: (formData.get('serviceId') as string) || null,
     updatedAt: new Date(),
   };

@@ -1,12 +1,13 @@
 import { db } from '@/db/index';
 import { works } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import WorkDetailsClient from './WorkDetailsClient';
 
-export default async function WorkDetailsPage({ params }: { params: { slug: string } }) {
+export default async function WorkDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const work = await db.query.works.findFirst({
-    where: eq(works.slug, params.slug)
+    where: and(eq(works.slug, slug), eq(works.active, true))
   });
 
   if (!work) {

@@ -17,7 +17,7 @@ export async function upsertCountry(formData: FormData) {
     code: formData.get('code') as string,
     flag: (formData.get('flag') as string) || null,
     isHome: formData.get('isHome') === 'true',
-    active: formData.get('active') !== 'false', // default true
+    active: formData.get('active') === 'true',
   };
 
   if (id) {

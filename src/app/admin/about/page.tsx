@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button, Card, Input, Modal, Switch, Table, TextArea } from "@heroui/react";
+import { Button, Card, Input, Modal, Switch, Table, TextArea, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { getAllStoryChapters, upsertStoryChapter, deleteStoryChapter } from './actions';
 import toast from 'react-hot-toast';
+import ImageUploadField from '@/components/admin/ImageUploadField';
 
 export default function AboutAdminPage() {
   const [chapters, setChapters] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingChapter, setEditingChapter] = useState<any | null>(null);
-  
+
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -48,9 +49,9 @@ export default function AboutAdminPage() {
     if (editingChapter?.id) {
       formData.append('id', editingChapter.id);
     }
-    
+
     const res = await upsertStoryChapter(formData);
-    
+
     if (!res || !res.success) {
       toast.error('Failed to save chapter');
     } else {
@@ -61,7 +62,7 @@ export default function AboutAdminPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto text-white">
+    <div className="max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">About Chapters</h1>
         <Button onPress={handleAddNew} className="bg-blue-600">
@@ -76,36 +77,35 @@ export default function AboutAdminPage() {
               No records found.
             </div>
           ) : (
-            <Table 
-            aria-label="Story chapters" 
-            
-          >
-            <Table.Header>
-              <Table.Column>ORDER</Table.Column>
-              <Table.Column>TITLE</Table.Column>
-              <Table.Column>STATUS</Table.Column>
-              <Table.Column >ACTIONS</Table.Column>
-            </Table.Header>
-            <Table.Body items={chapters}>
+            <Table>
+              <Table.Content aria-label="Story chapters">
+            <TableHeader>
+              <TableColumn>ORDER</TableColumn>
+              <TableColumn>TITLE</TableColumn>
+              <TableColumn>STATUS</TableColumn>
+              <TableColumn >ACTIONS</TableColumn>
+            </TableHeader>
+            <TableBody items={chapters}>
               {(item: any) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell>{item.order}</Table.Cell>
-                  <Table.Cell className="font-medium">{item.title}</Table.Cell>
-                  <Table.Cell>
+                <TableRow key={item.id}>
+                  <TableCell>{item.order}</TableCell>
+                  <TableCell className="font-medium">{item.title}</TableCell>
+                  <TableCell>
                     <span className={`px-2 py-1 rounded-full text-xs ${item.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
                       {item.active ? 'Active' : 'Inactive'}
                     </span>
-                  </Table.Cell>
-                  <Table.Cell>
+                  </TableCell>
+                  <TableCell>
                     <div className="flex justify-center gap-2">
                       <Button size="sm" variant="secondary" onPress={() => handleEdit(item)}>Edit</Button>
                       <Button size="sm" variant="secondary" onPress={() => handleDelete(item.id)}>Delete</Button>
                     </div>
-                  </Table.Cell>
-                </Table.Row>
+                  </TableCell>
+                </TableRow>
               )}
-            </Table.Body>
-          </Table>
+            </TableBody>
+              </Table.Content>
+            </Table>
           )}
         </Card.Content>
       </Card>
@@ -113,18 +113,18 @@ export default function AboutAdminPage() {
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}  >
         <Modal.Dialog>
           {({ close: onClose }: any) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-8">
               <Modal.Header>{editingChapter ? 'Edit Chapter' : 'Add New Chapter'}</Modal.Header>
               <Modal.Body className="py-6 max-h-[70vh] overflow-y-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Order</label><Input 
-                    name="order" 
-                     
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Order</label><Input
+                    name="order"
+
                     type="number"
-                    defaultValue={editingChapter?.order || 0} 
-                    required 
+                    defaultValue={editingChapter?.order || 0}
+                    required
                     variant="secondary"
-                    
+
                    /></div>
                   <div className="flex items-center gap-4 px-2">
                     <Switch name="active" defaultSelected={editingChapter?.active !== false} value="true">
@@ -134,67 +134,65 @@ export default function AboutAdminPage() {
                       Image on Left
                     </Switch>
                   </div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (English)</label><Input 
-                    name="title" 
-                     
-                    defaultValue={editingChapter?.title} 
-                    required 
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (English)</label><Input
+                    name="title"
+
+                    defaultValue={editingChapter?.title}
+                    required
                     variant="secondary"
-                    
+
                    /></div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (Arabic)</label><Input 
-                    name="titleAr" 
-                     
-                    defaultValue={editingChapter?.titleAr} 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (Arabic)</label><Input
+                    name="titleAr"
+
+                    defaultValue={editingChapter?.titleAr}
                     dir="rtl"
                     variant="secondary"
-                    
+
                    /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Content (English)</label><TextArea 
-                    name="text" 
-                     
-                    defaultValue={editingChapter?.text} 
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Content (English)</label><TextArea
+                    name="text"
+
+                    defaultValue={editingChapter?.text}
                     rows={4}
                     className="md:col-span-2"
                     variant="secondary"
-                    
+
                    /></div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Content (Arabic)</label><TextArea 
-                    name="textAr" 
-                     
-                    defaultValue={editingChapter?.textAr} 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Content (Arabic)</label><TextArea
+                    name="textAr"
+
+                    defaultValue={editingChapter?.textAr}
                     rows={4}
                     dir="rtl"
                     className="md:col-span-2"
                     variant="secondary"
-                    
+
                    /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Image URL</label><Input 
-                    name="image" 
-                     
-                    defaultValue={editingChapter?.image} 
-                    className="md:col-span-2"
+
+                  <ImageUploadField
+                    name="image"
+                    label="Image"
+                    defaultValue={editingChapter?.image}
+                    className="mb-2 md:col-span-2"
+                  />
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Eyebrow Text (English)</label><Input
+                    name="eyebrow"
+
+                    defaultValue={editingChapter?.eyebrow}
                     variant="secondary"
-                    
+
                    /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Eyebrow Text (English)</label><Input 
-                    name="eyebrow" 
-                     
-                    defaultValue={editingChapter?.eyebrow} 
-                    variant="secondary"
-                    
-                   /></div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Eyebrow Text (Arabic)</label><Input 
-                    name="eyebrowAr" 
-                     
-                    defaultValue={editingChapter?.eyebrowAr} 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Eyebrow Text (Arabic)</label><Input
+                    name="eyebrowAr"
+
+                    defaultValue={editingChapter?.eyebrowAr}
                     dir="rtl"
                     variant="secondary"
-                    
+
                    /></div>
                 </div>
               </Modal.Body>

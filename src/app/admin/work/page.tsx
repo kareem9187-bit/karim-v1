@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button, Card, Input, Modal, Switch, Table, TextArea } from "@heroui/react";
+import { Button, Card, Input, Modal, Switch, Table, TextArea, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { getAllWorks, upsertWork, deleteWork } from './actions';
 import toast from 'react-hot-toast';
+import ImageUploadField from '@/components/admin/ImageUploadField';
 
 export default function WorksAdminPage() {
   const [works, setWorks] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingWork, setEditingWork] = useState<any | null>(null);
-  
+
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -48,9 +49,9 @@ export default function WorksAdminPage() {
     if (editingWork?.id) {
       formData.append('id', editingWork.id);
     }
-    
+
     const res = await upsertWork(formData);
-    
+
     if (!res || !res.success) {
       toast.error('Failed to save portfolio item');
     } else {
@@ -61,7 +62,7 @@ export default function WorksAdminPage() {
   };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto text-white">
+    <div className="max-w-6xl">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Portfolio / Work</h1>
         <Button onPress={handleAddNew} className="bg-blue-600">
@@ -76,27 +77,25 @@ export default function WorksAdminPage() {
               No records found.
             </div>
           ) : (
-            <Table 
-            aria-label="Works" 
-            
-          >
-            <Table.Header>
-              <Table.Column>ORDER</Table.Column>
-              <Table.Column>TITLE</Table.Column>
-              <Table.Column>CATEGORY</Table.Column>
-              <Table.Column>STATUS</Table.Column>
-              <Table.Column >ACTIONS</Table.Column>
-            </Table.Header>
-            <Table.Body items={works}>
+            <Table>
+              <Table.Content aria-label="Works">
+            <TableHeader>
+              <TableColumn>ORDER</TableColumn>
+              <TableColumn>TITLE</TableColumn>
+              <TableColumn>CATEGORY</TableColumn>
+              <TableColumn>STATUS</TableColumn>
+              <TableColumn >ACTIONS</TableColumn>
+            </TableHeader>
+            <TableBody items={works}>
               {(item: any) => (
-                <Table.Row key={item.id}>
-                  <Table.Cell>{item.order}</Table.Cell>
-                  <Table.Cell>
+                <TableRow key={item.id}>
+                  <TableCell>{item.order}</TableCell>
+                  <TableCell>
                     <div className="font-medium">{item.title}</div>
                     <div className="text-xs text-gray-400">{item.slug}</div>
-                  </Table.Cell>
-                  <Table.Cell>{item.category}</Table.Cell>
-                  <Table.Cell>
+                  </TableCell>
+                  <TableCell>{item.category}</TableCell>
+                  <TableCell>
                     <div className="flex flex-col gap-1">
                       <span className={`w-fit px-2 py-1 rounded-full text-xs ${item.active ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'}`}>
                         {item.active ? 'Active' : 'Inactive'}
@@ -104,17 +103,18 @@ export default function WorksAdminPage() {
                       {item.featured && <span className="w-fit px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-400">Featured</span>}
                       {item.comingSoon && <span className="w-fit px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-400">Coming Soon</span>}
                     </div>
-                  </Table.Cell>
-                  <Table.Cell>
+                  </TableCell>
+                  <TableCell>
                     <div className="flex justify-center gap-2">
                       <Button size="sm" variant="secondary" onPress={() => handleEdit(item)}>Edit</Button>
                       <Button size="sm" variant="secondary" onPress={() => handleDelete(item.id)}>Delete</Button>
                     </div>
-                  </Table.Cell>
-                </Table.Row>
+                  </TableCell>
+                </TableRow>
               )}
-            </Table.Body>
-          </Table>
+            </TableBody>
+              </Table.Content>
+            </Table>
           )}
         </Card.Content>
       </Card>
@@ -122,28 +122,28 @@ export default function WorksAdminPage() {
       <Modal isOpen={isOpen} onOpenChange={setIsOpen}  >
         <Modal.Dialog>
           {({ close: onClose }: any) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-8">
               <Modal.Header>{editingWork ? 'Edit Work' : 'Add New Work'}</Modal.Header>
               <Modal.Body className="py-6 max-h-[70vh] overflow-y-auto">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Order</label><Input 
-                    name="order" 
-                     
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Order</label><Input
+                    name="order"
+
                     type="number"
-                    defaultValue={editingWork?.order || 0} 
-                    required 
+                    defaultValue={editingWork?.order || 0}
+                    required
                     variant="secondary"
-                    
+
                    /></div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Slug (URL)</label><Input 
-                    name="slug" 
-                     
-                    defaultValue={editingWork?.slug} 
-                    required 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Slug (URL)</label><Input
+                    name="slug"
+
+                    defaultValue={editingWork?.slug}
+                    required
                     variant="secondary"
-                    
+
                    /></div>
-                  
+
                   <div className="md:col-span-2 flex flex-wrap gap-6 px-2 py-2 border border-[rgba(255,255,255,0.1)] rounded-lg bg-[rgba(255,255,255,0.02)]">
                     <Switch name="active" defaultSelected={editingWork?.active !== false} value="true">
                       Active
@@ -155,30 +155,30 @@ export default function WorksAdminPage() {
                       Coming Soon
                     </Switch>
                   </div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (English)</label><Input 
-                    name="title" 
-                     
-                    defaultValue={editingWork?.title} 
-                    required 
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (English)</label><Input
+                    name="title"
+
+                    defaultValue={editingWork?.title}
+                    required
                     variant="secondary"
-                    
+
                    /></div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (Arabic)</label><Input 
-                    name="titleAr" 
-                     
-                    defaultValue={editingWork?.titleAr} 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Title (Arabic)</label><Input
+                    name="titleAr"
+
+                    defaultValue={editingWork?.titleAr}
                     dir="rtl"
                     variant="secondary"
-                    
+
                    /></div>
 
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Category (English)</label>
-                    <select 
-                      name="category" 
-                      defaultValue={editingWork?.category || "Video Editing"} 
-                      required 
+                    <select
+                      name="category"
+                      defaultValue={editingWork?.category || "Video Editing"}
+                      required
                       className="flex h-10 w-full rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm ring-offset-neutral-950 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-neutral-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-300 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 text-white"
                     >
                       <option value="Video Editing">Video Editing</option>
@@ -189,49 +189,47 @@ export default function WorksAdminPage() {
                       <option value="Motion & Graphics">Motion & Graphics</option>
                     </select>
                   </div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Category (Arabic)</label><Input 
-                    name="categoryAr" 
-                     
-                    defaultValue={editingWork?.categoryAr} 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Category (Arabic)</label><Input
+                    name="categoryAr"
+
+                    defaultValue={editingWork?.categoryAr}
                     dir="rtl"
                     variant="secondary"
-                    
+
                    /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Description (English)</label><TextArea 
-                    name="description" 
-                     
-                    defaultValue={editingWork?.description} 
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Description (English)</label><TextArea
+                    name="description"
+
+                    defaultValue={editingWork?.description}
                     rows={3}
                     variant="secondary"
-                    
+
                    /></div>
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Description (Arabic)</label><TextArea 
-                    name="descriptionAr" 
-                     
-                    defaultValue={editingWork?.descriptionAr} 
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Description (Arabic)</label><TextArea
+                    name="descriptionAr"
+
+                    defaultValue={editingWork?.descriptionAr}
                     rows={3}
                     dir="rtl"
                     variant="secondary"
-                    
+
                    /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Thumbnail Image URL</label><Input 
-                    name="thumbnail" 
-                     
-                    defaultValue={editingWork?.thumbnail} 
+
+                  <ImageUploadField
+                    name="thumbnail"
+                    label="Thumbnail Image"
+                    defaultValue={editingWork?.thumbnail}
+                    className="mb-2 md:col-span-2"
+                  />
+
+                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Video URL (Vimeo/YouTube)</label><Input
+                    name="videoUrl"
+
+                    defaultValue={editingWork?.videoUrl}
                     className="md:col-span-2"
                     variant="secondary"
-                    
-                   /></div>
-                  
-                  <div className="mb-2"><label className="block text-sm font-medium text-gray-300 mb-1">Video URL (Vimeo/YouTube)</label><Input 
-                    name="videoUrl" 
-                     
-                    defaultValue={editingWork?.videoUrl} 
-                    className="md:col-span-2"
-                    variant="secondary"
-                    
+
                    /></div>
                 </div>
               </Modal.Body>

@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { testimonials } from '@/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { and, eq, asc } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 
 export async function getTestimonials() {
@@ -15,7 +15,7 @@ export async function getAllTestimonials() {
 
 export async function getFeaturedTestimonial() {
   const [t] = await db.select().from(testimonials)
-    .where(eq(testimonials.isFeatured, true)).limit(1);
+    .where(and(eq(testimonials.isFeatured, true), eq(testimonials.active, true))).limit(1);
   return t ?? null;
 }
 
@@ -33,7 +33,7 @@ export async function upsertTestimonial(formData: FormData) {
     videoUrl: (formData.get('videoUrl') as string) || null,
     isFeatured: formData.get('isFeatured') === 'true',
     row: parseInt(formData.get('row') as string) || 1,
-    active: formData.get('active') !== 'false',
+    active: formData.get('active') === 'true',
   };
 
   if (id) {

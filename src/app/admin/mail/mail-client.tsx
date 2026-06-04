@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition, useEffect } from 'react';
-import { Avatar, Button, Input, Modal, Table, TextArea } from "@heroui/react";
+import { Avatar, Button, Input, Modal, Table, TextArea, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { sendEmail, getEmails } from './actions';
 import toast from 'react-hot-toast';
 
@@ -28,7 +28,7 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
   const [emails, setEmails] = useState<Email[]>(initialEmails);
   const [activeFolder, setActiveFolder] = useState(initialFolder);
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -53,7 +53,7 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
       toast.error('Please fill in all fields');
       return;
     }
-    
+
     startTransition(async () => {
       const res = await sendEmail({ to, subject, body });
       if (res.success) {
@@ -84,22 +84,22 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
     <div className="flex h-[calc(100vh-100px)] bg-[#04060a] text-white">
       {/* Sidebar */}
       <div className="w-[250px] border-r border-[rgba(255,255,255,0.06)] p-4 flex flex-col gap-2">
-        <Button 
+        <Button
           className="w-full mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 font-semibold"
           onPress={() => setIsOpen(true)}
         >
           Compose Email
         </Button>
-        
+
         {['inbox', 'sent', 'starred', 'drafts', 'trash'].map((folder) => {
           const unreadCount = folderCounts[folder]?.unread || 0;
           return (
-            <div 
+            <div
               key={folder}
               onClick={() => setActiveFolder(folder)}
               className={`flex items-center justify-between p-3 rounded-xl cursor-pointer transition-colors ${
-                activeFolder === folder 
-                  ? 'bg-[rgba(255,255,255,0.1)] text-white' 
+                activeFolder === folder
+                  ? 'bg-[rgba(255,255,255,0.1)] text-white'
                   : 'text-gray-400 hover:bg-[rgba(255,255,255,0.05)] hover:text-white'
               }`}
             >
@@ -161,16 +161,17 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
               No records found.
             </div>
           ) : (
-            <Table aria-label="Emails list" className="h-full" >
-              <Table.Header>
-                <Table.Column>SENDER</Table.Column>
-                <Table.Column>SUBJECT</Table.Column>
-                <Table.Column width={100}>DATE</Table.Column>
-              </Table.Header>
-              <Table.Body items={emails}>
+            <Table className="h-full">
+              <Table.Content aria-label="Emails list">
+              <TableHeader>
+                <TableColumn>SENDER</TableColumn>
+                <TableColumn>SUBJECT</TableColumn>
+                <TableColumn width={100}>DATE</TableColumn>
+              </TableHeader>
+              <TableBody items={emails}>
                 {(email: any) => (
-                  <Table.Row key={email.id} className="group cursor-pointer hover:bg-white/5">
-                    <Table.Cell>
+                  <TableRow key={email.id} className="group cursor-pointer hover:bg-white/5">
+                    <TableCell>
                       <div className="flex items-center gap-3">
                         {!email.read && activeFolder === 'inbox' && (
                           <div className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
@@ -179,20 +180,21 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
                           {email.fromName || email.fromEmail}
                         </span>
                       </div>
-                    </Table.Cell>
-                    <Table.Cell>
+                    </TableCell>
+                    <TableCell>
                       <span className={`truncate block max-w-md ${!email.read && activeFolder === 'inbox' ? 'font-semibold text-white' : 'text-gray-400'}`}>
                         {email.subject}
                       </span>
-                    </Table.Cell>
-                    <Table.Cell>
+                    </TableCell>
+                    <TableCell>
                       <span className="text-gray-500 text-sm whitespace-nowrap">
                         {formatDate(email.createdAt)}
                       </span>
-                    </Table.Cell>
-                  </Table.Row>
+                    </TableCell>
+                  </TableRow>
                 )}
-              </Table.Body>
+              </TableBody>
+              </Table.Content>
             </Table>
           )}
             {emails.length === 0 && !isPending && (
@@ -213,8 +215,8 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
                 <Modal.Body className="py-4 gap-4">
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">To</label>
-                    <Input 
-                      placeholder="recipient@example.com" 
+                    <Input
+                      placeholder="recipient@example.com"
                       variant="secondary"
                       value={to}
                       onChange={(e) => setTo(e.target.value)}
@@ -222,8 +224,8 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
                   </div>
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Subject</label>
-                    <Input 
-                      placeholder="Email subject" 
+                    <Input
+                      placeholder="Email subject"
                       variant="secondary"
                       value={subject}
                       onChange={(e) => setSubject(e.target.value)}
@@ -231,8 +233,8 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
                   </div>
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Message</label>
-                    <TextArea 
-                      placeholder="Write your message here..." 
+                    <TextArea
+                      placeholder="Write your message here..."
                       rows={10}
                       variant="secondary"
                       value={body}
@@ -250,7 +252,7 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
                 </Modal.Footer>
               </>
             )}
-          
+
           </Modal.Dialog>
         </Modal>
     </div>

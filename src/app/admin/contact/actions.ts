@@ -23,6 +23,7 @@ export async function updateContactInfo(formData: FormData) {
   await db.insert(contactInfo).values({ id: 'main', ...data })
     .onConflictDoUpdate({ target: contactInfo.id, set: data });
 
+  revalidatePath('/');
   revalidatePath('/contact');
   revalidatePath('/admin/contact');
   return { success: true };
@@ -46,7 +47,7 @@ export async function upsertSocialLink(formData: FormData) {
     url: formData.get('url') as string,
     label: (formData.get('label') as string) || null,
     icon: (formData.get('icon') as string) || null,
-    active: formData.get('active') !== 'false',
+    active: formData.get('active') === 'true',
   };
 
   if (id) {
@@ -55,6 +56,7 @@ export async function upsertSocialLink(formData: FormData) {
     await db.insert(socialLinks).values(data);
   }
 
+  revalidatePath('/');
   revalidatePath('/contact');
   revalidatePath('/admin/contact');
   return { success: true };
@@ -62,6 +64,7 @@ export async function upsertSocialLink(formData: FormData) {
 
 export async function deleteSocialLink(id: string) {
   await db.delete(socialLinks).where(eq(socialLinks.id, id));
+  revalidatePath('/');
   revalidatePath('/contact');
   revalidatePath('/admin/contact');
   return { success: true };

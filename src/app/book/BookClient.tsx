@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAvailableSlots, submitBooking } from '../api/bookings/actions';
+import { getAvailableSlots, submitBooking } from '@/app/api/bookings/bookings/actions';
 import styles from './BookClient.module.css';
 
 export interface EventType {
     id: string;
     title: string;
-    duration_minutes: number;
+    durationMinutes: number;
     price: number;
     description: string;
 }
@@ -36,7 +36,7 @@ export default function BookClient({ initialEventTypes }: BookClientProps) {
             setIsSlotsLoading(true);
             setTimeSlots([]);
             try {
-                const slots = await getAvailableSlots(selectedDate, selectedEvent.duration_minutes);
+                const slots = await getAvailableSlots(selectedDate, selectedEvent.durationMinutes);
                 setTimeSlots(slots);
             } catch (err) {
                 console.error("Error fetching slots", err);
@@ -68,7 +68,7 @@ export default function BookClient({ initialEventTypes }: BookClientProps) {
         formData.append('event_type_id', selectedEventId);
         formData.append('date', selectedDate);
         formData.append('time', selectedTime);
-        formData.append('duration_minutes', selectedEvent?.duration_minutes.toString() || '30');
+        formData.append('duration_minutes', selectedEvent?.durationMinutes.toString() || '30');
 
         const result = await submitBooking(formData);
 
@@ -96,7 +96,7 @@ export default function BookClient({ initialEventTypes }: BookClientProps) {
                                 <h3 className={styles.eventTitle}>{event.title}</h3>
                                 <p className={styles.eventDesc}>{event.description}</p>
                                 <div className={styles.eventMeta}>
-                                    <span>{event.duration_minutes} Minutes</span>
+                                    <span>{event.durationMinutes} Minutes</span>
                                     <span>{event.price === 0 ? 'Free' : `$${event.price}`}</span>
                                 </div>
                             </div>

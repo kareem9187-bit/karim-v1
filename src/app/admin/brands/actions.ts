@@ -16,7 +16,7 @@ export async function upsertBrand(formData: FormData) {
     name: formData.get('name') as string,
     logo: (formData.get('logo') as string) || null,
     style: (formData.get('style') as string) || null,
-    active: formData.get('active') !== 'false',
+    active: formData.get('active') === 'true',
   };
 
   if (id) {

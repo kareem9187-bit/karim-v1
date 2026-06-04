@@ -2,18 +2,18 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
-import { getAvailableSlots, submitBooking } from '@/app/api/bookings/actions';
+import { getAvailableSlots, submitBooking } from '@/app/api/bookings/bookings/actions';
 import s from '../Booking.module.css';
 import { SpaNavbar } from '@/components/public/SpaNavbar';
 
 interface EventType {
-    id: string; title: string; slug: string; description: string;
-    duration_minutes: number; price: number; color: string;
-    start_time_increment: number; allow_guests: boolean;
-    invitee_questions: { text: string; required: boolean; answer_type: string; status: boolean }[];
-    communication_methods: string[];
-    timezone_display: string; locked_timezone: string;
-    min_notice_hours: number; max_future_days: number;
+    id: string; title: string; slug: string; description: string | null;
+    durationMinutes: number; price: string | null; color: string | null;
+    startTimeIncrement: number | null; allowGuests: boolean | null;
+    inviteeQuestions: { text: string; required: boolean; answer_type: string; status: boolean }[] | null;
+    communicationMethods: string[] | null;
+    timezoneDisplay: string | null; lockedTimezone: string | null;
+    minNoticeHours: number | null; maxFutureDays: number | null;
 }
 
 interface Profile {
@@ -62,7 +62,7 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const today = new Date(); today.setHours(0, 0, 0, 0);
-        const maxDate = new Date(); maxDate.setDate(maxDate.getDate() + (ev.max_future_days || 60));
+        const maxDate = new Date(); maxDate.setDate(maxDate.getDate() + (ev.maxFutureDays || 60));
 
         const days: { day: number; available: boolean }[] = [];
         for (let i = 0; i < firstDay; i++) days.push({ day: 0, available: false });
@@ -75,7 +75,7 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
             days.push({ day: d, available: isFuture && isWeekday });
         }
         return days;
-    }, [month, year, ev.max_future_days]);
+    }, [month, year, ev.maxFutureDays]);
 
     // Fetch slots when date changes
     useEffect(() => {
@@ -83,11 +83,11 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
         setSlotsLoading(true);
         setSlots([]);
         setSelectedTime('');
-        getAvailableSlots(selectedDate, ev.duration_minutes).then(result => {
+        getAvailableSlots(selectedDate, ev.durationMinutes).then(result => {
             setSlots(result);
             setSlotsLoading(false);
         }).catch(() => setSlotsLoading(false));
-    }, [selectedDate, ev.duration_minutes]);
+    }, [selectedDate, ev.durationMinutes]);
 
     const selectDate = (day: number) => {
         const d = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
@@ -105,7 +105,7 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
         fd.set('event_type_id', ev.id);
         fd.set('date', selectedDate);
         fd.set('time', selectedTime);
-        fd.set('duration_minutes', ev.duration_minutes.toString());
+        fd.set('durationMinutes', ev.durationMinutes.toString());
         const r = await submitBooking(fd);
         setSubmitting(false);
         if (r?.error) setError(r.error);
@@ -113,7 +113,7 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
     };
 
     const selectedDateObj = selectedDate ? new Date(selectedDate + 'T00:00:00') : null;
-    const activeQuestions = (ev.invitee_questions || []).filter((q: any) => q.status);
+    const activeQuestions = (ev.inviteeQuestions || []).filter((q: any) => q.status);
 
     /* ======== SUCCESS ======== */
     if (step === 'success') {
@@ -124,7 +124,7 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
                 <div className="orb orb-2"></div>
                 <div className="orb orb-3"></div>
                 <SpaNavbar />
-                
+
                 <div className={s.bookingCard} style={{ justifyContent: 'center' }}>
                     <div className={s.successWrap}>
                         <div className={s.successIcon}>✓</div>
@@ -162,13 +162,13 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
                     <div className={s.sidebarTitle}>{ev.title}</div>
                     <div className={s.sidebarMeta}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
-                        {ev.duration_minutes} min
+                        {ev.durationMinutes} min
                     </div>
                     {step === 'details' && selectedDateObj && selectedTime && (
                         <>
                             <div className={s.sidebarMeta}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-                                {formatTime(selectedTime, p.time_format)} - {formatTime(addMinutes(selectedTime, ev.duration_minutes), p.time_format)}, {selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+                                {formatTime(selectedTime, p.time_format)} - {formatTime(addMinutes(selectedTime, ev.durationMinutes), p.time_format)}, {selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
                             </div>
                             <div className={s.sidebarMeta}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" /></svg>
@@ -273,7 +273,7 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
                             {/* Hidden combined name for backend */}
                             <input type="hidden" name="name" value="" />
 
-                            {ev.allow_guests && (
+                            {ev.allowGuests && (
                                 <>
                                     <button type="button" className={s.addGuestsBtn} onClick={() => setShowGuests(!showGuests)}>
                                         + Add Guests
@@ -288,12 +288,12 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
                             )}
 
                             {/* Communication Methods */}
-                            {ev.communication_methods && ev.communication_methods.length > 0 && (
+                            {ev.communicationMethods && ev.communicationMethods.length > 0 && (
                                 <div className={s.commMethodGroup}>
                                     <div className={s.commMethodLabel}>Online *</div>
-                                    {ev.communication_methods.map((m: string) => (
+                                    {ev.communicationMethods.map((m: string) => (
                                         <label key={m} className={s.commOption}>
-                                            <input type="radio" name="communication_method" value={m} defaultChecked={m === ev.communication_methods[0]} />
+                                            <input type="radio" name="communication_method" value={m} defaultChecked={m === ev.communicationMethods?.[0]} />
                                             {m === 'google_meet' && '📹 Google Meet'}
                                             {m === 'phone' && '📞 Phone call'}
                                             {m === 'in_person' && '🏢 In person'}
@@ -307,13 +307,13 @@ export default function BookingFlow({ eventType, profile }: { eventType: EventTy
                                 <div key={i} className={s.formGroup}>
                                     <label className={s.formLabel}>&ldquo;{q.text}&rdquo; {q.required && '*'}</label>
                                     {q.answer_type === 'textarea' ? (
-                                        <textarea name={question_} required={q.required} className={s.formTextarea} />
+                                        <textarea name={`question_${i}`} required={q.required} className={s.formTextarea} />
                                     ) : q.answer_type === 'select' ? (
-                                        <select name={question_} required={q.required} className={s.formSelect}>
+                                        <select name={`question_${i}`} required={q.required} className={s.formSelect}>
                                             <option value="">Select...</option>
                                         </select>
                                     ) : (
-                                        <input name={question_} required={q.required} className={s.formInput} />
+                                        <input name={`question_${i}`} required={q.required} className={s.formInput} />
                                     )}
                                 </div>
                             ))}

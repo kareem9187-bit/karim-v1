@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             file: dataUri,
-            upload_preset: 'karim_portfolio',
+            upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET || 'karim_portfolio',
             folder: 'karim-portfolio',
           }),
         }

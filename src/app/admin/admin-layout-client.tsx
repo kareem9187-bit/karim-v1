@@ -15,14 +15,16 @@ export default function AdminLayoutClient({
 
   // If it's the login page, hide the sidebar and don't add the left margin
   if (isLoginPage) {
-    return <>{children}</>;
+    return <div className="min-h-screen bg-black text-white">{children}</div>;
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0e17] text-white">
+    <div className="min-h-screen bg-[#050505] text-white">
       {sidebar}
-      <main style={{ paddingLeft: '260px' }} className="p-8 min-h-screen">
-        {children}
+      <main style={{ marginLeft: '260px' }} className="p-8 md:p-10 lg:p-12 min-h-screen">
+        <div className="max-w-6xl mx-auto">
+          {children}
+        </div>
       </main>
     </div>
   );

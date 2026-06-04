@@ -34,6 +34,7 @@ export async function updateTrainingInfo(formData: FormData) {
   await db.insert(trainingInfo).values({ id: 'main', ...data })
     .onConflictDoUpdate({ target: trainingInfo.id, set: data });
 
+  revalidatePath('/');
   revalidatePath('/training');
   revalidatePath('/admin/training');
   return { success: true };
@@ -54,6 +55,7 @@ export async function upsertTrainingStat(formData: FormData) {
     await db.insert(trainingStats).values(data);
   }
 
+  revalidatePath('/');
   revalidatePath('/training');
   revalidatePath('/admin/training');
   return { success: true };
@@ -61,6 +63,7 @@ export async function upsertTrainingStat(formData: FormData) {
 
 export async function deleteTrainingStat(id: string) {
   await db.delete(trainingStats).where(eq(trainingStats.id, id));
+  revalidatePath('/');
   revalidatePath('/training');
   revalidatePath('/admin/training');
   return { success: true };
