@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import { Inter, IBM_Plex_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import Script from 'next/script';
-import { db } from '@/db';
-import { siteSettings } from '@/db/schema';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,7 +24,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const fallbackKeywords =
     'Karim Abdelaziz, video editor, film director, cinematographer, Cairo, documentary, brand content, video production, Egypt, cinematic editing';
 
-  const [settings] = await db.select().from(siteSettings).limit(1);
+  let settings: any = null;
+  try {
+    const [{ db }, { siteSettings }] = await Promise.all([
+      import('@/db'),
+      import('@/db/schema'),
+    ]);
+    [settings] = await db.select().from(siteSettings).limit(1);
+  } catch (error) {
+    console.warn('Using fallback metadata because site settings could not be loaded.', error);
+  }
+
   const siteName = settings?.siteName || 'Karim Abdelaziz';
   const title = siteName === 'Karim Abdelaziz'
     ? fallbackTitle
