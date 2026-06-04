@@ -51,7 +51,7 @@ export async function getAvailableSlots(dateStr: string, durationMinutes: number
             where: eq(availability.dayOfWeek, dayOfWeek)
         });
         if (!availabilities || availabilities.length === 0) return [];
-        segments = availabilities.map(a => ({ start_time: a.startTime, end_time: a.endTime }));
+        segments = availabilities.map((a: any) => ({ start_time: a.startTime, end_time: a.endTime }));
     }
 
     const offset = getCairoOffset(new Date(dateStr));
@@ -88,7 +88,7 @@ export async function getAvailableSlots(dateStr: string, durationMinutes: number
 
     if (maxPerDay !== null) {
         const eventBookings = eventTypeId
-            ? dayBookings.filter(b => b.eventTypeId === eventTypeId).length
+            ? dayBookings.filter((b: any) => b.eventTypeId === eventTypeId).length
             : dayBookings.length;
         if (eventBookings >= maxPerDay) return [];
     }

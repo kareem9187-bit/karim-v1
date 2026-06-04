@@ -2,7 +2,8 @@
 
 import { db } from '@/db';
 import { works } from '@/db/schema';
-import { and, eq, asc } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
+import { asc } from '@/lib/db-order';
 import { revalidatePath } from 'next/cache';
 
 export async function getWorks() {

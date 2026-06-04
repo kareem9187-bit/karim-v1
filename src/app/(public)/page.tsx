@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { welcomeChapters, hero, stats, brands, services, testimonials } from '@/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
+import { asc } from '@/lib/db-order';
 import { Welcome } from '@/components/public/Welcome';
 import { Hero } from '@/components/public/Hero';
 import { BrandsStrip } from '@/components/public/BrandsStrip';

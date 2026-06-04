@@ -36,7 +36,7 @@ export async function getActiveEventTypes() {
     try {
         const events = await db.select().from(eventTypes).where(eq(eventTypes.isActive, true));
         // Drizzle doesn't automatically sort by created_at in basic select unless specified with orderBy
-        return events.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        return events.sort((a: any, b: any) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
     } catch (error) {
         console.error('Error fetching event types:', error);
         return [];

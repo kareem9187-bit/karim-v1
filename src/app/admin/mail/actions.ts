@@ -2,7 +2,9 @@
 
 import { db } from '@/db';
 import { emails } from '@/db/schema';
-import { eq, desc, and, count, sql } from 'drizzle-orm';
+import { eq, and, count } from 'drizzle-orm';
+import { sql } from 'drizzle-orm/sql';
+import { desc } from '@/lib/db-order';
 import { revalidatePath } from 'next/cache';
 
 // ─── getEmails ───────────────────────────────────────────────────────────────
@@ -108,7 +110,7 @@ export async function sendEmail({
   }
 
   // Save to DB
-  const [saved] = await db
+  const savedRows = (await db
     .insert(emails)
     .values({
       resendId,
@@ -126,7 +128,8 @@ export async function sendEmail({
       threadId: replyToId || null,
       replyToId: replyToId || null,
     })
-    .returning();
+    .returning()) as unknown as any[];
+  const saved = savedRows[0];
 
   revalidatePath('/admin/mail');
   return { success: status === 'sent', emailId: saved?.id, resendId };
@@ -156,7 +159,7 @@ export async function saveDraft({
     return { success: true, emailId: draftId };
   }
 
-  const [saved] = await db
+  const savedRows = (await db
     .insert(emails)
     .values({
       direction: 'sent',
@@ -170,7 +173,8 @@ export async function saveDraft({
       read: true,
       folder: 'drafts',
     })
-    .returning();
+    .returning()) as unknown as any[];
+  const saved = savedRows[0];
 
   revalidatePath('/admin/mail');
   return { success: true, emailId: saved?.id };

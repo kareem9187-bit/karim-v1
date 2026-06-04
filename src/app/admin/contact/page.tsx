@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createOverlayState } from '@/lib/overlay-state';
 import { Button, Card, Input, Modal, Switch, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, TextArea } from '@heroui/react';
 import toast from 'react-hot-toast';
 import { deleteSocialLink, getAllSocialLinks, getContactInfo, updateContactInfo, upsertSocialLink } from './actions';
@@ -10,6 +11,7 @@ export default function ContactAdminPage() {
   const [socials, setSocials] = useState<any[]>([]);
   const [editingSocial, setEditingSocial] = useState<any | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const modalState = createOverlayState(isOpen, setIsOpen);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadData = async () => {
@@ -146,7 +148,7 @@ export default function ContactAdminPage() {
         </Card.Content>
       </Card>
 
-      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Modal state={modalState}>
         <Modal.Dialog>
           {({ close: onClose }: any) => (
             <form onSubmit={handleSocialSubmit}>

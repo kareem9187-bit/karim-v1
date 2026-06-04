@@ -2,7 +2,8 @@
 
 import { db } from '@/db';
 import { storyChapters } from '@/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
+import { asc } from '@/lib/db-order';
 import { revalidatePath } from 'next/cache';
 
 export async function getStoryChapters() {

@@ -18,7 +18,8 @@ import {
   contactInfo,
 } from '@/db/schema';
 import ClientPage from './client-page';
-import { asc, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
+import { asc } from '@/lib/db-order';
 
 export const dynamic = 'force-dynamic';
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createOverlayState } from '@/lib/overlay-state';
 import { Button, Card, Input, Modal, Table, TextArea, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { getTrainingInfo, getTrainingStats, updateTrainingInfo, upsertTrainingStat, deleteTrainingStat } from './actions';
 import toast from 'react-hot-toast';
@@ -17,6 +18,7 @@ export default function TrainingAdminPage() {
   // Stats Modal
   const [editingStat, setEditingStat] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalState = createOverlayState(isModalOpen, setIsModalOpen);
 
   useEffect(() => {
     loadData();
@@ -226,7 +228,7 @@ export default function TrainingAdminPage() {
       </Card>
 
       {/* STAT MODAL */}
-      <Modal isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
+      <Modal state={modalState}>
         <Modal.Dialog>
           {({ close: onClose }: any) => (
             <form onSubmit={handleSaveStat}>

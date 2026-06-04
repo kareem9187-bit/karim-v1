@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { availability, availabilityOverrides } from '@/db/schema';
-import { asc, desc } from 'drizzle-orm';
+import { asc, desc } from '@/lib/db-order';
 import AvailabilityForm from './AvailabilityForm';
 import s from '../Scheduling.module.css';
 
@@ -9,7 +9,7 @@ export const metadata = { title: 'Availability | Admin' };
 export default async function AvailabilityPage() {
     const availabilities = await db.select().from(availability).orderBy(asc(availability.dayOfWeek));
     const overridesRaw = await db.select().from(availabilityOverrides).orderBy(desc(availabilityOverrides.date));
-    const overrides = overridesRaw.map(o => ({ ...o, slots: (o.slots as any) || [] }));
+    const overrides = overridesRaw.map((o: any) => ({ ...o, slots: (o.slots as any) || [] }));
 
     return (
         <div>

@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { bookings } from '@/db/schema';
-import { desc } from 'drizzle-orm';
+import { desc } from '@/lib/db-order';
 import BookingsClient from './BookingsClient';
 import s from '../Scheduling.module.css';
 

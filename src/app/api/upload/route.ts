@@ -68,12 +68,13 @@ export async function POST(req: NextRequest) {
     }
 
     // Save to media library
-    const [saved] = await db.insert(media).values({
+    const savedRows = (await db.insert(media).values({
       url,
       filename,
       type,
       size: file.size,
-    }).returning();
+    }).returning()) as unknown as any[];
+    const saved = savedRows[0];
 
     return NextResponse.json({ success: true, url, id: saved.id });
   } catch (e) {

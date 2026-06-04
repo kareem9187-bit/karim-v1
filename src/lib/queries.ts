@@ -6,18 +6,19 @@ import {
   media, contactSubmissions, eventTypes, availability,
   availabilityOverrides, bookings, settings,
 } from '@/db/schema';
-import { eq, asc, desc, and, gte, lt } from 'drizzle-orm';
+import { eq, and, gte, lt } from 'drizzle-orm';
+import { asc, desc } from '@/lib/db-order';
 
 // ═══ SITE ═══
 export const q = {
 
   // Settings
   siteSettings: () =>
-    db.select().from(siteSettings).limit(1).then(r => r[0] ?? null),
+    db.select().from(siteSettings).limit(1).then((r: any[]) => r[0] ?? null),
 
   // Hero
   hero: () =>
-    db.select().from(hero).limit(1).then(r => r[0] ?? null),
+    db.select().from(hero).limit(1).then((r: any[]) => r[0] ?? null),
 
   // Welcome chapters
   welcomeChapters: {
@@ -58,7 +59,7 @@ export const q = {
     all: () =>
       db.select().from(services).orderBy(asc(services.order)),
     byId: (id: string) =>
-      db.select().from(services).where(eq(services.id, id)).limit(1).then(r => r[0] ?? null),
+      db.select().from(services).where(eq(services.id, id)).limit(1).then((r: any[]) => r[0] ?? null),
   },
 
   // Works
@@ -70,7 +71,7 @@ export const q = {
     all: () =>
       db.select().from(works).orderBy(asc(works.order)),
     bySlug: (slug: string) =>
-      db.select().from(works).where(eq(works.slug, slug)).limit(1).then(r => r[0] ?? null),
+      db.select().from(works).where(eq(works.slug, slug)).limit(1).then((r: any[]) => r[0] ?? null),
     featured: () =>
       db.select().from(works)
         .where(and(eq(works.active, true), eq(works.featured, true)))
@@ -89,7 +90,7 @@ export const q = {
       db.select().from(testimonials)
         .where(eq(testimonials.isFeatured, true))
         .limit(1)
-        .then(r => r[0] ?? null),
+        .then((r: any[]) => r[0] ?? null),
     byRow: (row: number) =>
       db.select().from(testimonials)
         .where(and(eq(testimonials.active, true), eq(testimonials.row, row)))
@@ -98,7 +99,7 @@ export const q = {
 
   // Training
   trainingInfo: () =>
-    db.select().from(trainingInfo).limit(1).then(r => r[0] ?? null),
+    db.select().from(trainingInfo).limit(1).then((r: any[]) => r[0] ?? null),
   trainingStats: () =>
     db.select().from(trainingStats).orderBy(asc(trainingStats.order)),
 
@@ -142,7 +143,7 @@ export const q = {
 
   // Contact info
   contactInfo: () =>
-    db.select().from(contactInfo).limit(1).then(r => r[0] ?? null),
+    db.select().from(contactInfo).limit(1).then((r: any[]) => r[0] ?? null),
 
   // Media
   media: {
@@ -177,12 +178,12 @@ export const q = {
       db.select().from(eventTypes)
         .where(eq(eventTypes.slug, slug))
         .limit(1)
-        .then(r => r[0] ?? null),
+        .then((r: any[]) => r[0] ?? null),
     byId: (id: string) =>
       db.select().from(eventTypes)
         .where(eq(eventTypes.id, id))
         .limit(1)
-        .then(r => r[0] ?? null),
+        .then((r: any[]) => r[0] ?? null),
   },
 
   availability: {
@@ -199,7 +200,7 @@ export const q = {
       db.select().from(availabilityOverrides)
         .where(eq(availabilityOverrides.date, date))
         .limit(1)
-        .then(r => r[0] ?? null),
+        .then((r: any[]) => r[0] ?? null),
   },
 
   bookings: {

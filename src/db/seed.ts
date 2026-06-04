@@ -5,7 +5,7 @@ import {
   testimonials, processSteps, storyChapters, trainingInfo, trainingStats, countries,
 } from './schema';
 import { hash } from 'bcryptjs';
-import { sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm/sql';
 
 async function seed() {
   console.log('🌱 Seeding database with original index_33.html content...');

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createOverlayState } from '@/lib/overlay-state';
 import { Button, Card, Input, Modal, Switch, Table, TextArea, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { getAllStoryChapters, upsertStoryChapter, deleteStoryChapter } from './actions';
 import toast from 'react-hot-toast';
@@ -12,6 +13,7 @@ export default function AboutAdminPage() {
   const [editingChapter, setEditingChapter] = useState<any | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+  const modalState = createOverlayState(isOpen, setIsOpen);
 
   useEffect(() => {
     loadChapters();
@@ -110,7 +112,7 @@ export default function AboutAdminPage() {
         </Card.Content>
       </Card>
 
-      <Modal isOpen={isOpen} onOpenChange={setIsOpen}  >
+      <Modal state={modalState}  >
         <Modal.Dialog>
           {({ close: onClose }: any) => (
             <form onSubmit={handleSubmit} className="space-y-8">

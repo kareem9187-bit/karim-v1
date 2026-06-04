@@ -2,7 +2,8 @@
 
 import { db } from '@/db';
 import { trainingInfo, trainingStats, testimonials } from '@/db/schema';
-import { eq, asc, and } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
+import { asc } from '@/lib/db-order';
 import { revalidatePath } from 'next/cache';
 
 export async function getTrainingInfo() {

@@ -31,7 +31,7 @@ export default async function BookPage() {
                     <p className={s.profileBio}>{profile.welcome_message}</p>
                     <div className={s.divider} />
                     {eventTypes && eventTypes.length > 0 ? (
-                        eventTypes.map(ev => (
+                        eventTypes.map((ev: any) => (
                             <Link key={ev.id} href={`/book/${ev.slug}`} className={s.eventItem}>
                                 <div className={s.eventDot} style={{ background: ev.color || '#3b82f6' }} />
                                 <div className={s.eventItemBody}>

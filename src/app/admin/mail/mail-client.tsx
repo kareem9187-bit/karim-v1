@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition, useEffect } from 'react';
+import { createOverlayState } from '@/lib/overlay-state';
 import { Avatar, Button, Input, Modal, Table, TextArea, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import { sendEmail, getEmails } from './actions';
 import toast from 'react-hot-toast';
@@ -30,6 +31,7 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+  const modalState = createOverlayState(isOpen, setIsOpen);
   const [isPending, startTransition] = useTransition();
 
   // Compose state
@@ -207,7 +209,7 @@ export default function MailClient({ initialEmails, initialFolder, folderCounts 
       </div>
 
       {/* Compose Modal */}
-      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Modal state={modalState}>
         <Modal.Dialog>
             {({ close: onClose }: any) => (
               <>

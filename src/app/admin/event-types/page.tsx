@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { eventTypes } from '@/db/schema';
-import { desc } from 'drizzle-orm';
+import { desc } from '@/lib/db-order';
 import EventTypesList from './EventTypesList';
 import s from '../Scheduling.module.css';
 

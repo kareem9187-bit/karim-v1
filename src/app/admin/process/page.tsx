@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createOverlayState } from '@/lib/overlay-state';
 import { Button, Card, Input, Modal, Switch, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, TextArea } from '@heroui/react';
 import toast from 'react-hot-toast';
 import { deleteProcessStep, getProcessSteps, upsertProcessStep } from './actions';
@@ -9,6 +10,7 @@ export default function ProcessAdminPage() {
   const [steps, setSteps] = useState<any[]>([]);
   const [editingStep, setEditingStep] = useState<any | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const modalState = createOverlayState(isOpen, setIsOpen);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadSteps = async () => {
@@ -95,7 +97,7 @@ export default function ProcessAdminPage() {
         </Card.Content>
       </Card>
 
-      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Modal state={modalState}>
         <Modal.Dialog>
           {({ close: onClose }: any) => (
             <form onSubmit={handleSubmit} className="space-y-8">

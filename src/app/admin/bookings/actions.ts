@@ -2,7 +2,8 @@
 
 import { db } from '@/db';
 import { bookings, eventTypes } from '@/db/schema';
-import { eq, desc, gte, lt } from 'drizzle-orm';
+import { eq, gte, lt } from 'drizzle-orm';
+import { desc } from '@/lib/db-order';
 import { revalidatePath } from 'next/cache';
 
 export async function getAllBookings() {

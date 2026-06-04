@@ -2,7 +2,8 @@
 
 import { db } from '@/db';
 import { media } from '@/db/schema';
-import { eq, desc } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
+import { desc } from '@/lib/db-order';
 import { revalidatePath } from 'next/cache';
 
 export async function getMedia() {

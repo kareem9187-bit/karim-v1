@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { createOverlayState } from '@/lib/overlay-state';
 import { Button, Card, Input, Modal, Switch, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/react';
 import toast from 'react-hot-toast';
 import { deleteCountry, getCountries, upsertCountry } from './actions';
@@ -9,6 +10,7 @@ export default function CountriesAdminPage() {
   const [countries, setCountries] = useState<any[]>([]);
   const [editingCountry, setEditingCountry] = useState<any | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const modalState = createOverlayState(isOpen, setIsOpen);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadCountries = async () => {
@@ -95,7 +97,7 @@ export default function CountriesAdminPage() {
         </Card.Content>
       </Card>
 
-      <Modal isOpen={isOpen} onOpenChange={setIsOpen}>
+      <Modal state={modalState}>
         <Modal.Dialog>
           {({ close: onClose }: any) => (
             <form onSubmit={handleSubmit} className="space-y-8">
