@@ -3,7 +3,7 @@
   position: fixed;
   bottom: clamp(1.5rem, 4vh, 2.5rem);
   right: clamp(1.5rem, 4vw, 2.5rem);
-  z-index: 90; 
+  z-index: 9999; 
   display: flex;
   align-items: center;
   justify-content: center;

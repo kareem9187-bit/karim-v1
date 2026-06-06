@@ -100,7 +100,15 @@ export function FloatingCTA() {
     }
 
     return (
-        <div className={styles.ctaContainer} aria-hidden={!isVisible}>
+        <div 
+            className={styles.ctaContainer} 
+            style={{ 
+                opacity: isVisible ? 1 : 0, 
+                pointerEvents: isVisible ? 'auto' : 'none', 
+                transition: 'opacity 0.3s ease' 
+            }}
+            aria-hidden={!isVisible}
+        >
             <Link href="/book" ref={ctaRef} className={styles.primaryBtn}>
                 <span className={styles.textDesktop}>LET&apos;S TALK</span>
                 <span className={styles.iconMobile}>
