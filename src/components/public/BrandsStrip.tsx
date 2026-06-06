@@ -1,3 +1,5 @@
+'use client';
+
 interface Brand {
   id: string;
   name: string;
