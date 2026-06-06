@@ -1,18 +1,15 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { usePathname } from 'next/navigation';
-import gsap from 'gsap';
+import { usePathname, useRouter } from 'next/navigation';
 import styles from './FloatingCTA.module.css';
-import Link from 'next/link';
 
 export function FloatingCTA() {
     const pathname = usePathname();
+    const router = useRouter();
     const [isVisible, setIsVisible] = useState(false);
-    const [scrollDirection, setScrollDirection] = useState<'down' | 'up' | 'top'>('top');
+    const [isExpanded, setIsExpanded] = useState(false); // true = Let's talk, false = Back to top
     const lastScrollY = useRef(0);
-    const ctaRef = useRef<HTMLAnchorElement>(null);
-    const topRef = useRef<HTMLButtonElement>(null);
 
     // Hide it completely if on book page or admin pages
     const isFocusedFlow = pathname?.startsWith('/book') || pathname?.startsWith('/admin');
@@ -22,17 +19,22 @@ export function FloatingCTA() {
 
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
+            
+            // Show button only after scrolling down 50px
+            setIsVisible(currentScrollY > 50);
 
+            // Determine direction to expand/shrink
             if (currentScrollY < 100) {
-                setScrollDirection('top');
+                setIsExpanded(false);
             } else if (currentScrollY > lastScrollY.current) {
-                setScrollDirection('down');
+                // Scrolling down -> Show "Let's Talk" (Expanded)
+                setIsExpanded(true);
             } else if (currentScrollY < lastScrollY.current) {
-                setScrollDirection('up');
+                // Scrolling up -> Show "Back to top" (Shrunk)
+                setIsExpanded(false);
             }
 
             lastScrollY.current = currentScrollY;
-            setIsVisible(currentScrollY > 50); // General visibility threshold
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -41,58 +43,12 @@ export function FloatingCTA() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isFocusedFlow]);
 
-    useEffect(() => {
-        if (isFocusedFlow) return;
-
-        const ctx = gsap.context(() => {
-            if (scrollDirection === 'top' || scrollDirection === 'down') {
-                // Hide Back to Top first
-                gsap.to(topRef.current, {
-                    y: 20,
-                    opacity: 0,
-                    scale: 0.9,
-                    duration: 0.3,
-                    ease: 'power2.in',
-                    pointerEvents: 'none'
-                });
-                // Show Primary CTA with a slight delay for smoothness
-                gsap.to(ctaRef.current, {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.5,
-                    delay: 0.15,
-                    ease: 'back.out(1.2)',
-                    pointerEvents: 'auto'
-                });
-            } else if (scrollDirection === 'up') {
-                // Hide Primary CTA first
-                gsap.to(ctaRef.current, {
-                    y: 20,
-                    opacity: 0,
-                    scale: 0.9,
-                    duration: 0.3,
-                    ease: 'power2.in',
-                    pointerEvents: 'none'
-                });
-                // Show Back to Top with a slight delay
-                gsap.to(topRef.current, {
-                    y: 0,
-                    opacity: 1,
-                    scale: 1,
-                    duration: 0.5,
-                    delay: 0.15,
-                    ease: 'back.out(1.2)',
-                    pointerEvents: 'auto'
-                });
-            }
-        });
-
-        return () => ctx.revert();
-    }, [isFocusedFlow, scrollDirection]);
-
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    const handleClick = () => {
+        if (isExpanded) {
+            router.push('/book');
+        } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     };
 
     if (isFocusedFlow) {
@@ -105,28 +61,29 @@ export function FloatingCTA() {
             style={{ 
                 opacity: isVisible ? 1 : 0, 
                 pointerEvents: isVisible ? 'auto' : 'none', 
-                transition: 'opacity 0.3s ease' 
+                transition: 'opacity 0.4s ease'
             }}
             aria-hidden={!isVisible}
         >
-            <Link href="/book" ref={ctaRef} className={styles.primaryBtn}>
-                <span className={styles.textDesktop}>LET&apos;S TALK</span>
-                <span className={styles.iconMobile}>
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <button 
+                className={`${styles.dynamicButton} ${isExpanded ? styles.expanded : ''}`}
+                onClick={handleClick}
+                aria-label={isExpanded ? "Let's Talk" : "Back to top"}
+            >
+                <div className={styles.iconWrapper}>
+                    {/* Arrow Up Icon */}
+                    <svg className={`${styles.icon} ${styles.iconUp}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 19V5M5 12l7-7 7 7"/>
+                    </svg>
+                    
+                    {/* Message / Let's talk Icon */}
+                    <svg className={`${styles.icon} ${styles.iconTalk}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                     </svg>
-                </span>
-            </Link>
-
-            <button
-                ref={topRef}
-                className={styles.backToTopBtn}
-                onClick={scrollToTop}
-                aria-label="Back to top"
-            >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                </div>
+                <div className={styles.textWrapper}>
+                    LET&apos;S TALK
+                </div>
             </button>
         </div>
     );

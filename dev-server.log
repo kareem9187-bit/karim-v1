@@ -1,0 +1,284 @@
+
+> karim-portfolio@1.0.0 dev
+> next dev -p 3003
+
+ ⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: \\?\D:\karim\karim-portfolio\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node is not a valid Win32 application.
+\\?\D:\karim\karim-portfolio\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+ ⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: \\?\D:\karim\karim-portfolio\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node is not a valid Win32 application.
+\\?\D:\karim\karim-portfolio\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+   ▲ Next.js 15.5.18
+   - Local:        http://localhost:3003
+   - Network:      http://172.31.144.1:3003
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 5.9s
+ ○ Compiling / ...
+ ✓ Compiled / in 7.6s (2198 modules)
+ GET / 200 in 10045ms
+ ○ Compiling /book ...
+ ✓ Compiled /book in 7.7s (2306 modules)
+ GET /book 200 in 10399ms
+ ⚠ Cross origin request detected from 127.0.0.1 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ ○ Compiling /middleware ...
+ GET / 200 in 3725ms
+ ✓ Compiled /middleware in 4.1s (370 modules)
+ GET /book 200 in 804ms
+ ✓ Compiled in 16.1s (2320 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 7s (2312 modules)
+ GET /book 404 in 12183ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\server\\app-paths-manifest.json',
+  page: '/book'
+}
+ ○ Compiling /_error ...
+ GET / 200 in 15397ms
+ ✓ Compiled /_error in 6.4s (2659 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json',
+  page: '/book'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\server\app-paths-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\server\\app-paths-manifest.json',
+  page: '/book'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json',
+  page: '/book'
+}
+ GET /book 500 in 33849ms
+ GET /book 500 in 2309ms
+ GET / 500 in 28452ms
+ GET / 500 in 2310ms
+ GET /book 500 in 28507ms
+ GET /book 500 in 57ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+ GET / 500 in 3322ms
+ GET / 500 in 502ms
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json',
+  page: '/'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+[Error: ENOENT: no such file or directory, open 'D:\karim\karim-portfolio\.next\routes-manifest.json'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\karim\\karim-portfolio\\.next\\routes-manifest.json'
+}
+ GET / 500 in 3452ms
+ GET / 500 in 509ms
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2572758345'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1672664909'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1672664909'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1672664909'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2572758345'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2572758345'
+}
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  digest: '166906945'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2572758345'
+}
+[TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/book'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2572758345'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1672664909'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1672664909'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '1672664909'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2572758345'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2572758345'
+}
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  digest: '166906945'
+}
+ ⨯ Error: Could not find the module "D:\karim\karim-portfolio\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2572758345'
+}
+[TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/'
+}
+ GET /book 500 in 14662ms
+ GET / 500 in 14800ms

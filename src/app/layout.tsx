@@ -72,6 +72,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import { Providers } from './providers';
+import { FloatingCTA } from '@/components/public/FloatingCTA';
 
 export default function RootLayout({
   children,
@@ -83,6 +84,9 @@ export default function RootLayout({
       <body className={`${inter.variable} ${ibmPlexArabic.variable} antialiased`} suppressHydrationWarning>
         <Providers>
           {children}
+
+          {/* Floating CTA is global, internal logic hides it on specific pages */}
+          <FloatingCTA />
 
           <Script src="https://d3js.org/d3.v7.min.js" strategy="beforeInteractive" />
           <Script src="https://cdn.jsdelivr.net/npm/jsvectormap" strategy="beforeInteractive" />
