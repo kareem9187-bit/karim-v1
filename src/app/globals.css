@@ -1712,7 +1712,7 @@ footer{
   #testimonials .container{padding:0 16px;}
   .video-reviews-grid{grid-template-columns:1fr;gap:16px;max-width:280px;margin:0 auto;}
   .process-grid{grid-template-columns:1fr;gap:16px;}
-  #process{padding:80px 0;}
+  #process{padding:80px 16px;}
   .cta-primary,.cta-secondary{padding:16px 24px;font-size:14px;}
   .contact-actions{grid-template-columns:1fr;}
   .contact-faq{grid-template-columns:1fr;gap:8px;}
