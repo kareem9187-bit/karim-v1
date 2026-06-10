@@ -21,8 +21,8 @@ export default function AdminLayoutClient({
   return (
     <div className="min-h-screen bg-[#050505] text-white">
       {sidebar}
-      <main style={{ marginLeft: '260px' }} className="p-8 md:p-10 lg:p-12 min-h-screen">
-        <div className="max-w-6xl mx-auto">
+      <main className="md:ml-[260px] p-4 md:p-8 lg:p-12 min-h-screen pt-20 md:pt-8 w-full">
+        <div className="max-w-6xl mx-auto space-y-6">
           {children}
         </div>
       </main>

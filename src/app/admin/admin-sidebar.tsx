@@ -22,9 +22,12 @@ import {
   FolderOpen,
   Settings,
   Search,
-  ExternalLink
+  ExternalLink,
+  Menu,
+  X
 } from 'lucide-react';
 import clsx from 'clsx';
+import { useState } from 'react';
 
 const SIDEBAR_LINKS = [
   { group: 'Content', items: [
@@ -54,10 +57,31 @@ const SIDEBAR_LINKS = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <aside className="w-[260px] border-r border-white/5 bg-[#050505] fixed inset-y-0 start-0 z-50 flex flex-col">
-      {/* Logo */}
+    <>
+      {/* Mobile Toggle */}
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="md:hidden fixed top-4 right-4 z-[60] p-2 bg-[#111] rounded-lg border border-white/10 text-white"
+      >
+        {isOpen ? <X size={20} /> : <Menu size={20} />}
+      </button>
+
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-black/60 z-[45] backdrop-blur-sm"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside className={clsx(
+        "w-[260px] border-r border-white/5 bg-[#050505] fixed inset-y-0 start-0 z-50 flex flex-col transition-transform duration-300 ease-in-out",
+        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      )}>
+        {/* Logo */}
       <div className="h-[72px] flex items-center px-6 border-b border-white/5">
         <Link href="/admin" className="flex items-center gap-3 no-underline transition-opacity hover:opacity-80">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-xs shadow-lg shadow-blue-500/20">
@@ -126,5 +150,6 @@ export default function AdminSidebar() {
         </Link>
       </div>
     </aside>
+    </>
   );
 }

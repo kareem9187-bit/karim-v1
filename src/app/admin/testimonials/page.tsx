@@ -129,8 +129,8 @@ export default function TestimonialsAdminPage() {
             <form onSubmit={handleSubmit} className="space-y-8">
               <Modal.Header>{editingItem ? 'Edit Testimonial' : 'Add Testimonial'}</Modal.Header>
               <Modal.Body className="py-6 max-h-[70vh] overflow-y-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="mb-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Order</label>
                     <Input
                       name="order"
@@ -153,7 +153,7 @@ export default function TestimonialsAdminPage() {
                     </Switch>
                   </div>
 
-                  <div className="mb-2">
+                  <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
                     <Input
                       name="name"
@@ -163,7 +163,7 @@ export default function TestimonialsAdminPage() {
                     />
                   </div>
 
-                  <div className="mb-2">
+                  <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Role / Company</label>
                     <Input
                       name="role"
@@ -176,10 +176,10 @@ export default function TestimonialsAdminPage() {
                     name="avatar"
                     label="Avatar"
                     defaultValue={editingItem?.avatar}
-                    className="mb-2"
+                    className="mb-4"
                   />
 
-                  <div className="mb-2">
+                  <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Rating (1-5)</label>
                     <Input
                       name="rating"
@@ -191,7 +191,7 @@ export default function TestimonialsAdminPage() {
                     />
                   </div>
 
-                  <div className="mb-2 md:col-span-2">
+                  <div className="mb-4 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Testimonial Text (English)</label>
                     <TextArea
                       name="text"
@@ -202,7 +202,7 @@ export default function TestimonialsAdminPage() {
                     />
                   </div>
 
-                  <div className="mb-2 md:col-span-2">
+                  <div className="mb-4 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Testimonial Text (Arabic)</label>
                     <TextArea
                       name="textAr"
@@ -213,7 +213,7 @@ export default function TestimonialsAdminPage() {
                     />
                   </div>
 
-                  <div className="mb-2 md:col-span-2">
+                  <div className="mb-4 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Video URL (if applicable)</label>
                     <Input
                       name="videoUrl"
@@ -223,7 +223,7 @@ export default function TestimonialsAdminPage() {
                     />
                   </div>
 
-                  <div className="mb-2 md:col-span-2">
+                  <div className="mb-4 md:col-span-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Video Thumbnail</label>
                     <ImageUploadField
                       name="videoThumbnail"
@@ -231,7 +231,7 @@ export default function TestimonialsAdminPage() {
                     />
                   </div>
 
-                  <div className="mb-2">
+                  <div className="mb-4">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Grid Row Size</label>
                     <Input
                       name="row"
