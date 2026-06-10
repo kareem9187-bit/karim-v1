@@ -32,6 +32,7 @@ export async function upsertTestimonial(formData: FormData) {
     rating: parseInt(formData.get('rating') as string) || 5,
     isVideo: formData.get('isVideo') === 'true',
     videoUrl: (formData.get('videoUrl') as string) || null,
+    videoThumbnail: (formData.get('videoThumbnail') as string) || null,
     isFeatured: formData.get('isFeatured') === 'true',
     row: parseInt(formData.get('row') as string) || 1,
     active: formData.get('active') === 'true',

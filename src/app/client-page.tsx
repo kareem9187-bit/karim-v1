@@ -901,7 +901,7 @@ export default function ClientPage({
         {testimonialsData?.filter(t => t.isVideo).map((t, idx) => (
           <div key={idx} className="video-card">
             <div className="video-card-glow"></div>
-            <div className="video-card-bg"></div>
+            <div className="video-card-bg" style={{ backgroundImage: t.videoThumbnail ? `url(${t.videoThumbnail})` : undefined, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
             <div className="video-card-quote">"</div>
             <div className="video-card-play" onClick={() => { if(typeof window !== "undefined" && (window as any).openVideoModal) { (window as any).openVideoModal(t.videoUrl); } }}>
               <svg viewBox="0 0 24 24"><polygon points="6,4 20,12 6,20"/></svg>

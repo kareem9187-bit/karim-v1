@@ -223,6 +223,14 @@ export default function TestimonialsAdminPage() {
                     />
                   </div>
 
+                  <div className="mb-2 md:col-span-2">
+                    <label className="block text-sm font-medium text-gray-300 mb-1">Video Thumbnail</label>
+                    <ImageUploadField
+                      name="videoThumbnail"
+                      defaultValue={editingItem?.videoThumbnail}
+                    />
+                  </div>
+
                   <div className="mb-2">
                     <label className="block text-sm font-medium text-gray-300 mb-1">Grid Row Size</label>
                     <Input

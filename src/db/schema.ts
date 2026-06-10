@@ -134,6 +134,7 @@ export const testimonials = pgTable('testimonials', {
   rating: integer('rating').default(5),
   isVideo: boolean('is_video').default(false),
   videoUrl: text('video_url'),
+  videoThumbnail: text('video_thumbnail'),
   isFeatured: boolean('is_featured').default(false),
   row: integer('row').default(1),
   active: boolean('active').default(true),
