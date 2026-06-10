@@ -16,6 +16,7 @@ import {
   works,
   welcomeChapters,
   contactInfo,
+  settings,
 } from '@/db/schema';
 import ClientPage from './client-page';
 import { eq } from 'drizzle-orm';
@@ -39,6 +40,11 @@ export default async function PublicPage() {
   const socialData = await db.select().from(socialLinks).where(eq(socialLinks.active, true)).orderBy(asc(socialLinks.order));
   const worksData = await db.select().from(works).where(eq(works.active, true)).orderBy(asc(works.order));
   const [contactData] = await db.select().from(contactInfo).limit(1);
+  const [quickBriefSettings] = await db
+    .select({ value: settings.value })
+    .from(settings)
+    .where(eq(settings.key, 'quick_brief_config'))
+    .limit(1);
 
   return (
     <ClientPage
@@ -57,6 +63,7 @@ export default async function PublicPage() {
       socialData={socialData}
       worksData={worksData}
       contactData={contactData}
+      quickBriefData={quickBriefSettings?.value ?? null}
     />
   );
 }

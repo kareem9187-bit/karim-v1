@@ -60,13 +60,13 @@ export function Hero({ data }: { data: HeroData | null }) {
         {/* CTAs */}
         <div className="flex flex-col md:flex-row gap-4 mt-12">
           {data.ctaPrimaryText && (
-            <a href={data.ctaPrimaryLink || '#work'} className="cta-primary min-h-[48px] flex items-center justify-center gap-2">
+            <a href={data.ctaPrimaryLink || '#services'} className="cta-primary min-h-[48px] flex items-center justify-center gap-2">
               <span>{data.ctaPrimaryText}</span>
               <ArrowRight className="w-4 h-4" />
             </a>
           )}
           {data.ctaSecondaryText && (
-            <a href={data.ctaSecondaryLink || '/book'} className="cta-secondary min-h-[48px] flex items-center justify-center">
+            <a href={data.ctaSecondaryLink || '#services'} className="cta-secondary min-h-[48px] flex items-center justify-center">
               <span>{data.ctaSecondaryText}</span>
             </a>
           )}

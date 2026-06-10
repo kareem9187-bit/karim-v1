@@ -326,7 +326,7 @@ export const bookings = pgTable('bookings', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
-// ═══ SETTINGS (key-value store for booking profile etc.) ═══
+// ═══ SETTINGS (key-value store) ═══
 export const settings = pgTable('settings', {
   key: text('key').primaryKey(),
   value: json('value'),

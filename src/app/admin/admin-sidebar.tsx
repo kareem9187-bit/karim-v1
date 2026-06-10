@@ -16,10 +16,6 @@ import {
   BarChart3,
   Globe2,
   HelpCircle,
-  CalendarDays,
-  Clock,
-  IdCard,
-  BookOpen,
   Mail,
   Phone,
   Inbox,
@@ -45,12 +41,6 @@ const SIDEBAR_LINKS = [
     { href: '/admin/stats', label: 'Stats', icon: BarChart3 },
     { href: '/admin/countries', label: 'Countries', icon: Globe2 },
     { href: '/admin/faq', label: 'FAQ', icon: HelpCircle },
-  ]},
-  { group: 'Booking', items: [
-    { href: '/admin/event-types', label: 'Event Types', icon: CalendarDays },
-    { href: '/admin/availability', label: 'Availability', icon: Clock },
-    { href: '/admin/booking-profile', label: 'Profile', icon: IdCard },
-    { href: '/admin/bookings', label: 'Bookings', icon: BookOpen },
   ]},
   { group: 'System', items: [
     { href: '/admin/mail', label: 'Mail', icon: Mail },

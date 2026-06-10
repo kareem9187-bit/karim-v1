@@ -1,7 +1,7 @@
 import { db } from './index';
 import {
   users, hero, welcomeChapters, stats, brands, services,
-  faqs, socialLinks, contactInfo, siteSettings, eventTypes, availability,
+  faqs, socialLinks, contactInfo, siteSettings,
   testimonials, processSteps, storyChapters, trainingInfo, trainingStats, countries,
 } from './schema';
 import { hash } from 'bcryptjs';
@@ -51,8 +51,8 @@ async function seed() {
     greetingAr: 'أهلاً، أنا',
     tagline: 'I edit branded videos that turn <em>viewers into customers.</em> Cinematic craft for brands that need their content to <em>perform</em> — not just look pretty.',
     taglineAr: 'بعمل فيديوهات براند بتحوّل <em>المشاهدين لعملاء.</em> حرفة سينمائية للبراندات اللي محتاجة محتواها <em>يحقق نتائج</em> — مش بس يبقى جميل.',
-    ctaPrimaryText: 'Book a Free Discovery Call',
-    ctaPrimaryTextAr: 'احجز جلسة استكشاف مجانية',
+    ctaPrimaryText: 'Start a Project',
+    ctaPrimaryTextAr: 'ابدأ مشروع',
     ctaPrimaryLink: '#',
     ctaSecondaryText: 'See My Work',
     ctaSecondaryTextAr: 'شاهد أعمالي',
@@ -65,8 +65,8 @@ async function seed() {
       greetingAr: 'أهلاً، أنا',
       tagline: 'I edit branded videos that turn <em>viewers into customers.</em> Cinematic craft for brands that need their content to <em>perform</em> — not just look pretty.',
       taglineAr: 'بعمل فيديوهات براند بتحوّل <em>المشاهدين لعملاء.</em> حرفة سينمائية للبراندات اللي محتاجة محتواها <em>يحقق نتائج</em> — مش بس يبقى جميل.',
-      ctaPrimaryText: 'Book a Free Discovery Call',
-      ctaPrimaryTextAr: 'احجز جلسة استكشاف مجانية',
+      ctaPrimaryText: 'Start a Project',
+      ctaPrimaryTextAr: 'ابدأ مشروع',
       ctaPrimaryLink: '#',
       ctaSecondaryText: 'See My Work',
       ctaSecondaryTextAr: 'شاهد أعمالي',
@@ -141,7 +141,7 @@ async function seed() {
 
   // Process Steps
   await db.insert(processSteps).values([
-    { order: 1, title: 'Discovery Call', titleAr: 'جلسة الاستكشاف', description: 'A free 30-min call to understand your vision, goals, audience, and timeline. No commitment.', descriptionAr: 'مكالمة مجانية ٣٠ دقيقة نفهم فيها رؤيتك وأهدافك وجمهورك. بدون أي التزام.', icon: 'discovery', timeLabel: '30 min · Free', timeLabelAr: '٣٠ دقيقة · مجاناً' },
+    { order: 1, title: 'Quick Brief', titleAr: 'بريف سريع', description: 'A short project brief to understand your vision, goals, audience, and timeline.', descriptionAr: 'بريف سريع نفهم منه رؤيتك وأهدافك وجمهورك والمدة المناسبة.', icon: 'discovery', timeLabel: 'Under 1 min', timeLabelAr: 'أقل من دقيقة' },
     { order: 2, title: 'Custom Proposal', titleAr: 'عرض مخصص', description: 'You receive a clear proposal: scope, deliverables, timeline, and transparent pricing — within 24 hours.', descriptionAr: 'بتستلم عرض واضح: نطاق الشغل، الـ deliverables، المدة، والتسعير الشفاف — خلال ٢٤ ساعة.', icon: 'proposal', timeLabel: 'Within 24 hours', timeLabelAr: 'خلال ٢٤ ساعة' },
     { order: 3, title: 'Production & Edit', titleAr: 'الإنتاج والمونتاج', description: "I get to work — shooting, editing, color grading, sound. You get progress updates and a preview before final cut.", descriptionAr: 'ببدأ شغل — تصوير، مونتاج، تصحيح ألوان، صوت. بتاخد تحديثات منتظمة و preview قبل الـ final cut.', icon: 'production', timeLabel: '3-14 days typical', timeLabelAr: '٣ - ١٤ يوم غالباً' },
     { order: 4, title: 'Delivery & Revisions', titleAr: 'التسليم والمراجعات', description: 'You get the final files in all formats you need. 2 free rounds of revisions to make it perfect.', descriptionAr: 'بتستلم الملفات النهائية في كل الصيغ اللي محتاجها. مع جولتين مراجعة مجانية للوصول للنتيجة المثالية.', icon: 'delivery', timeLabel: 'Same day delivery', timeLabelAr: 'تسليم في نفس اليوم' },
@@ -245,15 +245,15 @@ async function seed() {
     whatsapp: '+201234567890',
     email: 'hello@karimabdelaziz.com',
     phone: null,
-    tagline: 'Have a project in mind? Book a free 30-min discovery call — no pressure, just a real conversation about your vision.',
-    taglineAr: 'عندك مشروع في بالك؟ احجز جلسة استكشاف مجانية ٣٠ دقيقة — بدون أي ضغط، مجرد حوار حقيقي حول رؤيتك.',
+    tagline: 'Have a project in mind? Send a quick brief and I will get back to you with the best next step.',
+    taglineAr: 'عندك مشروع في بالك؟ ابعت بريف سريع وهرد عليك بأفضل خطوة نبدأ منها.',
   }).onConflictDoUpdate({
     target: contactInfo.id,
     set: {
       whatsapp: '+201234567890',
       email: 'hello@karimabdelaziz.com',
-      tagline: 'Have a project in mind? Book a free 30-min discovery call — no pressure, just a real conversation about your vision.',
-      taglineAr: 'عندك مشروع في بالك؟ احجز جلسة استكشاف مجانية ٣٠ دقيقة — بدون أي ضغط، مجرد حوار حقيقي حول رؤيتك.',
+      tagline: 'Have a project in mind? Send a quick brief and I will get back to you with the best next step.',
+      taglineAr: 'عندك مشروع في بالك؟ ابعت بريف سريع وهرد عليك بأفضل خطوة نبدأ منها.',
     }
   });
 
@@ -308,21 +308,6 @@ async function seed() {
     { order: 2, number: '1:1', label: 'Personalized', labelAr: 'جلسات فردية' },
     { order: 3, number: 'Online', label: 'Available Worldwide', labelAr: 'متاح عالمياً' },
   ]);
-
-  // Booking: Event types
-  await db.insert(eventTypes).values([
-    { title: 'Discovery Call', slug: 'discovery-call', description: 'Quick 15-min call to discuss your project and see if we\'re a good fit.', durationMinutes: 15, price: '0', color: '#5fa3e0', isActive: true, startTimeIncrement: 15, minNoticeHours: 4, maxFutureDays: 30 },
-    { title: 'Project Consultation', slug: 'project-consultation', description: '45-min deep dive into your project Deep scope and direction.', durationMinutes: 45, price: '0', color: '#3a7fc7', isActive: true, startTimeIncrement: 30, minNoticeHours: 24, maxFutureDays: 60 },
-  ]).onConflictDoNothing();
-
-  // Booking: Availability (Sun-Thu, 10:00-18:00 Cairo time)
-  await db.insert(availability).values([
-    { dayOfWeek: 0, startTime: '10:00:00', endTime: '18:00:00' }, // Sunday
-    { dayOfWeek: 1, startTime: '10:00:00', endTime: '18:00:00' }, // Monday
-    { dayOfWeek: 2, startTime: '10:00:00', endTime: '18:00:00' }, // Tuesday
-    { dayOfWeek: 3, startTime: '10:00:00', endTime: '18:00:00' }, // Wednesday
-    { dayOfWeek: 4, startTime: '10:00:00', endTime: '18:00:00' }, // Thursday
-  ]).onConflictDoNothing();
 
   console.log('✅ Seeding complete!');
   process.exit(0);

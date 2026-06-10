@@ -1,15 +1,14 @@
 import { db } from '@/db';
-import { works, testimonials, bookings, contactSubmissions, emails } from '@/db/schema';
+import { works, testimonials, contactSubmissions, emails } from '@/db/schema';
 import { count, eq, and } from 'drizzle-orm';
-import { Image as ImageIcon, Star, CalendarDays, Inbox, Mail } from 'lucide-react';
+import { Image as ImageIcon, Star, Inbox, Mail } from 'lucide-react';
 
 export const metadata = { title: 'Dashboard | Admin' };
 
 export default async function AdminPage() {
-  const [worksCount, testimonialsCount, bookingsCount, unreadCount, unreadEmailsCount] = await Promise.all([
+  const [worksCount, testimonialsCount, unreadCount, unreadEmailsCount] = await Promise.all([
     db.select({ count: count() }).from(works),
     db.select({ count: count() }).from(testimonials),
-    db.select({ count: count() }).from(bookings),
     db.select({ count: count() }).from(contactSubmissions).where(eq(contactSubmissions.read, false)),
     db.select({ count: count() }).from(emails).where(and(eq(emails.read, false), eq(emails.folder, 'inbox'))),
   ]);
@@ -17,7 +16,6 @@ export default async function AdminPage() {
   const statsCards = [
     { label: 'Portfolio Items', value: worksCount[0]?.count || 0, icon: ImageIcon, color: 'text-blue-400', bg: 'bg-blue-400/10' },
     { label: 'Testimonials', value: testimonialsCount[0]?.count || 0, icon: Star, color: 'text-yellow-400', bg: 'bg-yellow-400/10' },
-    { label: 'Bookings', value: bookingsCount[0]?.count || 0, icon: CalendarDays, color: 'text-green-400', bg: 'bg-green-400/10' },
     { label: 'Unread Messages', value: unreadCount[0]?.count || 0, icon: Inbox, color: 'text-orange-400', bg: 'bg-orange-400/10' },
     { label: 'Unread Emails', value: unreadEmailsCount[0]?.count || 0, icon: Mail, color: 'text-purple-400', bg: 'bg-purple-400/10' },
   ];

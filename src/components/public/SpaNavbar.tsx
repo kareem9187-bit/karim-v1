@@ -7,11 +7,8 @@ const NAV_LINKS = [
   { href: 'home', label: 'Home', labelAr: 'الرئيسية' },
   { href: 'about', label: 'About', labelAr: 'عني' },
   { href: 'services', label: 'Services', labelAr: 'خدماتي' },
-  { href: 'work', label: 'Work', labelAr: 'أعمالي' },
-  { href: 'testimonials', label: 'Testimonials', labelAr: 'آراء العملاء' },
   { href: 'training', label: 'Training', labelAr: 'التدريب' },
   { href: 'contact', label: 'Contact', labelAr: 'تواصل' },
-  { href: 'book', label: 'Book', labelAr: 'حجز موعد' },
 ];
 
 const STATUSES = [
@@ -84,22 +81,9 @@ export function SpaNavbar() {
   const handleNavClick = (e: React.MouseEvent, href: string) => {
     e.preventDefault();
     setMobileOpen(false);
-    
-    if (href === 'book') {
-        window.location.href = '/book';
-        return;
-    }
 
     if(typeof window !== 'undefined' && (window as any).spaGo){
-      if (href === 'testimonials') {
-          (window as any).spaGo('home', false);
-          setTimeout(() => {
-              const el = document.getElementById('testimonials');
-              if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }, 100);
-      } else {
-          (window as any).spaGo(href, false);
-      }
+      (window as any).spaGo(href, false);
     }
   };
 
@@ -114,6 +98,21 @@ export function SpaNavbar() {
         >
           <img src="/images/karim.jpg" alt="Karim" style={{width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover'}} />
         </a>
+
+        <div className="nav-links nav-links-desktop">
+          {NAV_LINKS.map((item) => (
+            <a
+              key={item.href}
+              href={`#${item.href}`}
+              data-spa={item.href}
+              onClick={(e) => handleNavClick(e, item.href)}
+              data-en={item.label}
+              data-ar={item.labelAr}
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
 
         {/* Dynamic Status Ticker (Mobile Only) */}
         <div className="flex-1 flex items-center justify-center overflow-hidden md:hidden" style={{ margin: '0 16px' }}>
@@ -139,20 +138,19 @@ export function SpaNavbar() {
         </div>
 
         {/* Desktop actions */}
-        <div className="nav-actions flex flex-col md:flex-row gap-4 hidden md:flex">
+        <div className="nav-actions">
           <button className="nav-lang" id="portfolioLangBtn">العربية</button>
           <a href="#" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } }} className="nav-cta">
-            <span data-en="Book a Call" data-ar="احجز مكالمة">Book a Call</span>
+            <span data-en="Start Project" data-ar="ابدأ مشروع">Start Project</span>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
           </a>
         </div>
 
-        {/* Hamburger - Visible on both desktop and mobile */}
+        {/* Hamburger - Mobile only */}
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
           className="nav-hamburger"
           aria-label="Menu"
-          style={{ display: 'flex' }}
         >
           <span style={{ transform: mobileOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none' }}></span>
           <span style={{ opacity: mobileOpen ? 0 : 1 }}></span>

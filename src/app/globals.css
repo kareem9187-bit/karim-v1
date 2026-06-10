@@ -903,24 +903,25 @@ html[dir="rtl"] .nav-cta svg{transform:scaleX(-1);}
 /* Mobile hamburger button (hidden on desktop) */
 .nav-hamburger{
   display:none;
-  width:38px;height:38px;border-radius:50%;
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
+  width:48px;height:48px;
+  background:transparent;
+  border:none;
   cursor:pointer;padding:0;
-  flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  flex-direction:column;align-items:center;justify-content:center;gap:6px;
   transition:all .25s;
 }
-.nav-hamburger:hover{background:rgba(255,255,255,0.08);}
+.nav-hamburger:hover{opacity:0.8;}
 .nav-hamburger span{
-  display:block;width:16px;height:1.5px;
+  display:block;width:28px;height:2px;
   background:var(--white);
   border-radius:100px;
   transition:all .3s cubic-bezier(.4,0,.2,1);
   transform-origin:center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
-.nav-hamburger.open span:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(1){transform:translateY(8px) rotate(45deg);}
 .nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
-.nav-hamburger.open span:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg);}
 
 /* Mobile nav menu (slides in from right) */
 @media(max-width:768px){
@@ -3325,7 +3326,9 @@ html[dir="rtl"] .qb-btn svg{transform:scaleX(-1);}
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: var(--color-primary-dark);
+  background-color: rgba(4, 6, 10, 0.6);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
   z-index: 90; /* just below navbar which is z-100 */
   display: flex;
   padding: 20vh 5%;
@@ -3409,13 +3412,15 @@ html[dir="rtl"] .qb-btn svg{transform:scaleX(-1);}
     display: flex;
     flex-direction: column;
     overflow-y: auto; 
+    align-items: center;
+    justify-content: center;
   }
 
   .menu-overlay-content {
-    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
+    align-items: center;
     gap: 1rem;
     min-height: min-content;
   }
@@ -3424,26 +3429,31 @@ html[dir="rtl"] .qb-btn svg{transform:scaleX(-1);}
     font-size: clamp(1rem, 3vw, 1.2rem);
     opacity: 0.5;
     margin-bottom: 0;
+    text-align: center;
   }
 
   .nav-links-list {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
     margin-top: 1rem;
   }
 
   .menu-link-wrapper {
     padding-left: 0;
     margin-left: 0;
+    display: flex;
+    justify-content: center;
   }
 
   .huge-link {
-    font-size: clamp(1.2rem, 5vw, 1.5rem);
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
     letter-spacing: -0.01em;
     font-weight: 700;
     line-height: 1.2;
     padding: 6px 0;
+    text-align: center;
   }
 
   .huge-link::before {

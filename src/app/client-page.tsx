@@ -1,6 +1,7 @@
 "use client";
 
 import { SpaNavbar } from '@/components/public/SpaNavbar';
+import { getQuickBriefOptionValue, normalizeQuickBriefConfig } from '@/lib/quick-brief';
 import { useEffect } from 'react';
 
 const getServiceIcon = (icon: string) => {
@@ -52,6 +53,33 @@ const getSocialIcon = (platform: string) => {
   }
 };
 
+const fallbackPortfolioWorks = [
+  { serviceKey: 'editing', cat: 'Brand Film', name: 'Tech Launch Video' },
+  { serviceKey: 'editing', cat: 'Music Video', name: 'Indie Artist Reel' },
+  { serviceKey: 'editing', cat: 'Corporate', name: 'Annual Report Film' },
+  { serviceKey: 'editing', cat: 'Cinematic', name: 'Travel Diary 2025' },
+  { serviceKey: 'cinematography', cat: 'Commercial', name: 'Fashion Brand Shoot' },
+  { serviceKey: 'cinematography', cat: 'Documentary', name: 'Cairo Streets Story' },
+  { serviceKey: 'cinematography', cat: 'Event', name: 'Wedding Cinematography' },
+  { serviceKey: 'cinematography', cat: 'Lifestyle', name: 'Coffee Brand Visual' },
+  { serviceKey: 'social', cat: 'Reel', name: 'Viral Fashion Reel' },
+  { serviceKey: 'social', cat: 'TikTok', name: 'Food Brand Series' },
+  { serviceKey: 'social', cat: 'Short', name: 'Tech Product Demo' },
+  { serviceKey: 'social', cat: 'Story Pack', name: 'Influencer Campaign' },
+  { serviceKey: 'documentary', cat: 'Documentary', name: 'The Maker Story' },
+  { serviceKey: 'documentary', cat: 'Brand Film', name: 'Heritage Brand Doc' },
+  { serviceKey: 'documentary', cat: 'Profile', name: 'Athlete Portrait' },
+  { serviceKey: 'documentary', cat: 'Series', name: 'Cultural Voices Series' },
+  { serviceKey: 'mentorship', cat: 'Course', name: 'Premiere Pro Masterclass' },
+  { serviceKey: 'mentorship', cat: 'Workshop', name: 'Color Grading Bootcamp' },
+  { serviceKey: 'mentorship', cat: '1:1', name: 'Portfolio Coaching' },
+  { serviceKey: 'mentorship', cat: 'Online', name: 'Reels Editing Course' },
+  { serviceKey: 'motion', cat: 'Logo Reveal', name: 'Brand Identity Animation' },
+  { serviceKey: 'motion', cat: 'Title Sequence', name: 'Documentary Opener' },
+  { serviceKey: 'motion', cat: 'Lower Thirds', name: 'News Show Pack' },
+  { serviceKey: 'motion', cat: 'Explainer', name: 'SaaS Product Animation' },
+];
+
 export default function ClientPage({
   heroData,
   servicesData,
@@ -67,7 +95,8 @@ export default function ClientPage({
   socialData,
   worksData,
   welcomeChaptersData,
-  contactData
+  contactData,
+  quickBriefData
 }: {
   heroData: any,
   servicesData: any[],
@@ -83,7 +112,8 @@ export default function ClientPage({
   socialData: any[],
   worksData?: any[],
   welcomeChaptersData?: any[],
-  contactData?: any
+  contactData?: any,
+  quickBriefData?: any
 }) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -108,12 +138,26 @@ export default function ClientPage({
   const displayNameAr = heroData?.nameAr || 'كريم عبدالعزيز';
   const [firstName, ...restName] = displayName.split(' ');
   const lastName = restName.join(' ') || 'Abdelaziz';
-  const heroPrimaryText = heroData?.ctaPrimaryText || 'Book a Free Discovery Call';
-  const heroPrimaryTextAr = heroData?.ctaPrimaryTextAr || 'احجز جلسة استكشاف مجانية';
-  const heroPrimaryLink = heroData?.ctaPrimaryLink || '#';
+  const quickBrief = normalizeQuickBriefConfig(quickBriefData);
+  const isBookingPhrase = (value?: string | null) => Boolean(value && /book|booking|call|discovery|احجز|حجز|مكالمة|استكشاف/i.test(value));
+  const cleanLink = (value?: string | null, fallback = '#') => {
+    const target = value?.trim();
+    if (!target || target === '/book' || target.startsWith('/book')) return fallback;
+    if (target === '#work' || target === '/work' || target.startsWith('/work')) return '#services';
+    return target;
+  };
+  const heroPrimaryText = isBookingPhrase(heroData?.ctaPrimaryText) ? 'Start a Project' : (heroData?.ctaPrimaryText || 'Start a Project');
+  const heroPrimaryTextAr = isBookingPhrase(heroData?.ctaPrimaryTextAr) ? 'ابدأ مشروع' : (heroData?.ctaPrimaryTextAr || 'ابدأ مشروع');
+  const heroPrimaryLink = cleanLink(heroData?.ctaPrimaryLink, '#');
   const heroSecondaryText = heroData?.ctaSecondaryText || 'See My Work';
   const heroSecondaryTextAr = heroData?.ctaSecondaryTextAr || 'شاهد أعمالي';
-  const heroSecondaryLink = heroData?.ctaSecondaryLink || '#services';
+  const heroSecondaryLink = cleanLink(heroData?.ctaSecondaryLink, '#services');
+  const contactTagline = isBookingPhrase(contactData?.tagline)
+    ? 'Have a project in mind? Send a quick brief and I will get back to you with the best next step.'
+    : (contactData?.tagline || 'Have a project in mind? Send a quick brief and I will get back to you with the best next step.');
+  const contactTaglineAr = isBookingPhrase(contactData?.taglineAr)
+    ? 'عندك مشروع في بالك؟ ابعت بريف سريع وهرد عليك بأفضل خطوة نبدأ منها.'
+    : (contactData?.taglineAr || 'عندك مشروع في بالك؟ ابعت بريف سريع وهرد عليك بأفضل خطوة نبدأ منها.');
   const splitCopy = (value: string) => value.split(/\n+/).map((part) => part.trim()).filter(Boolean);
   const fallbackTrainingDescription = [
     'Learn from a working professional.',
@@ -127,6 +171,21 @@ export default function ClientPage({
   ].join('\n');
   const trainingDescriptionParts = splitCopy(trainingData?.description || fallbackTrainingDescription);
   const trainingDescriptionArParts = splitCopy(trainingData?.descriptionAr || fallbackTrainingDescriptionAr);
+  const activeWorks = (worksData || []).filter((w: any) => w.active !== false);
+  const portfolioWorks = activeWorks.length > 0
+    ? activeWorks.map((work: any) => ({ ...work, isFallback: false }))
+    : fallbackPortfolioWorks.map((work, idx) => ({
+        id: `fallback-${work.serviceKey}-${idx}`,
+        slug: '',
+        title: work.name,
+        titleAr: work.name,
+        category: work.cat,
+        categoryAr: work.cat,
+        thumbnail: '/images/karim.jpg',
+        serviceKey: work.serviceKey,
+        serviceId: '',
+        isFallback: true,
+      }));
 
   const handleDynamicLink = (e: any, link?: string | null, fallbackSection?: string) => {
     const target = link?.trim();
@@ -145,6 +204,13 @@ export default function ClientPage({
         (window as any).spaGo(section);
       }
     }
+  };
+  const openServiceWork = (e: any, serviceKey?: string) => {
+    if (!serviceKey) return;
+    e.preventDefault();
+    const selector = `.svc-card[data-service="${serviceKey}"]`;
+    const card = typeof document !== 'undefined' ? document.querySelector<HTMLElement>(selector) : null;
+    card?.click();
   };
 
   return (
@@ -333,7 +399,7 @@ export default function ClientPage({
     <div className="hero-trust">
       <div className="trust-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
-        <span data-en="Free 30-min consultation" data-ar="استشارة مجانية ٣٠ دقيقة">Free 30-min consultation</span>
+        <span data-en="Quick project brief" data-ar="بريف مشروع سريع">Quick project brief</span>
       </div>
       <div className="trust-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
@@ -400,7 +466,7 @@ export default function ClientPage({
     <div className="home-cta-wrap reveal">
       <div className="home-cta-eyebrow" data-en="Let's create together" data-ar="خلينا نبدع سوا">Let's create together</div>
       <h2 className="home-cta-title" data-en="Ready to make <em>something real?</em>" data-ar="جاهز نعمل <em>حاجة حقيقية؟</em>">Ready to make <em>something real?</em></h2>
-      <p className="home-cta-sub" data-en="A free 30-minute call. No commitment. Just a conversation about your project." data-ar="مكالمة مجانية ٣٠ دقيقة. بدون أي التزام. مجرد كلام عن مشروعك.">A free 30-minute call. No commitment. Just a conversation about your project.</p>
+      <p className="home-cta-sub" data-en="Send the essentials in under a minute, and I will reply with a clear next step." data-ar="ابعت الأساسيات في أقل من دقيقة، وهرد عليك بخطوة واضحة نبدأ منها.">Send the essentials in under a minute, and I will reply with a clear next step.</p>
       <div className="home-cta-actions">
         <a href="#" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } }} className="cta-primary">
           <span data-en="Start your project" data-ar="ابدأ مشروعك">Start your project</span>
@@ -413,36 +479,6 @@ export default function ClientPage({
     </div>
   </div>
 </section>
-
-  <section id="work" data-page="work">
-    <div className="container">
-      <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-        <div className="eyebrow" data-en="Selected Projects" data-ar="مشاريع مختارة">Selected Projects</div>
-        <h2 className="heading" data-en="My Portfolio." data-ar="معرض أعمالي">My Portfolio.</h2>
-      </div>
-
-      <div className="work-grid">
-        {(worksData || []).filter((w: any) => w.active !== false).map((work: any) => (
-          <a key={work.id} href={`/work/${work.slug}`} className="work-card">
-            <div className="work-thumbnail">
-              <img src={work.thumbnail || '/images/karim.jpg'} alt={work.title} />
-              <div className="work-overlay">
-                <div className="play-icon">▶</div>
-              </div>
-            </div>
-            <div className="work-info">
-              <h3 className="work-title" data-en={work.title} data-ar={work.titleAr || work.title}>{work.title}</h3>
-              <div className="work-category" data-en={work.category} data-ar={work.categoryAr || work.category}>{work.category}</div>
-            </div>
-          </a>
-        ))}
-      </div>
-
-      {(!worksData || worksData.filter((w: any) => w.active !== false).length === 0) && (
-        <div style={{ textAlign: 'center', color: 'var(--muted)', padding: '2rem 0' }} data-en="No projects added yet." data-ar="لا توجد مشاريع مضافة حالياً.">No projects added yet.</div>
-      )}
-    </div>
-  </section>
 
   <section id="testimonials" data-page="home">
   <div className="container">
@@ -774,7 +810,13 @@ export default function ClientPage({
     </div>
     <div className="services-grid">
       {(servicesData || []).map((service: any, idx: number) => (
-        <div key={service.id || idx} className="svc-card reveal" data-service={service.icon}>
+        <div
+          key={service.id || idx}
+          className="svc-card reveal"
+          data-service={service.icon}
+          data-service-id={service.id}
+          data-service-title={service.title}
+        >
           <div className="svc-icon">
             {getServiceIcon(service.icon)}
           </div>
@@ -782,8 +824,41 @@ export default function ClientPage({
             <div className="svc-title" data-en={service.title} data-ar={service.titleAr}>{service.title}</div>
             <p className="svc-desc" data-en={service.description} data-ar={service.descriptionAr}>{service.description}</p>
           </div>
-          <span className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</span>
+          <button type="button" className="svc-cta" data-en="View Work" data-ar="شاهد الأعمال">View Work</button>
         </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section id="portfolio" data-page="services" className="services-portfolio">
+  <div className="container">
+    <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+      <div className="eyebrow" data-en="Selected Projects" data-ar="مشاريع مختارة">Selected Projects</div>
+      <h2 className="heading" data-en="My Portfolio." data-ar="معرض أعمالي">My Portfolio.</h2>
+    </div>
+
+    <div className="work-grid">
+      {portfolioWorks.map((work: any) => (
+        <a
+          key={work.id}
+          href={work.isFallback ? '#portfolio' : `/work/${work.slug}`}
+          onClick={work.isFallback ? (e) => openServiceWork(e, work.serviceKey) : undefined}
+          className="work-card"
+          data-service-id={work.serviceId || ''}
+          data-work-category={work.category || ''}
+        >
+          <div className="work-thumbnail">
+            <img src={work.thumbnail || '/images/karim.jpg'} alt={work.title} />
+            <div className="work-overlay">
+              <div className="play-icon">▶</div>
+            </div>
+          </div>
+          <div className="work-info">
+            <h3 className="work-title" data-en={work.title} data-ar={work.titleAr || work.title}>{work.title}</h3>
+            <div className="work-category" data-en={work.category} data-ar={work.categoryAr || work.category}>{work.category}</div>
+          </div>
+        </a>
       ))}
     </div>
   </div>
@@ -824,7 +899,7 @@ export default function ClientPage({
         </ul>
         <div className="consult-btn-wrap">
           <a href="#" onClick={(e) => { e.preventDefault(); if(typeof window !== "undefined" && (window as any).qbOpen) { (window as any).qbOpen(); } }} className="consult-btn">
-            <span data-en="Book a Consultation" data-ar="احجز استشارة">Book a Consultation</span>
+            <span data-en="Start a Mentorship Brief" data-ar="ابدأ بريف المنتورنج">Start a Mentorship Brief</span>
           </a>
         </div>
       </div>
@@ -904,8 +979,8 @@ export default function ClientPage({
   <div className="contact-inner">
     <div className="eyebrow" data-en="Start a Project" data-ar="ابدأ مشروع">Start a Project</div>
     <h2 className="heading" data-en="Let's create something." data-ar="هيا نبدع معاً">Let's create something.</h2>
-    <p className="contact-tagline" data-en={contactData?.tagline || "Have a project in mind? Book a free 30-min discovery call — no pressure, just a real conversation about your vision."} data-ar={contactData?.taglineAr || "عندك مشروع في بالك؟ احجز جلسة استكشاف مجانية ٣٠ دقيقة — بدون أي ضغط، مجرد حوار حقيقي حول رؤيتك."}>
-      {contactData?.tagline || "Have a project in mind? Book a free 30-min discovery call — no pressure, just a real conversation about your vision."}
+    <p className="contact-tagline" data-en={contactTagline} data-ar={contactTaglineAr}>
+      {contactTagline}
     </p>
 
     {/* Two main CTAs */}
@@ -986,16 +1061,21 @@ export default function ClientPage({
 {/* ═══════════════════ QUICK BRIEF MODAL ═══════════════════ */}
 
 
-<div className="qb-modal" id="qbModal">
+<div
+  className="qb-modal"
+  id="qbModal"
+  data-whatsapp={contactData?.whatsapp || ''}
+  data-email={contactData?.email || ''}
+>
   <div className="qb-modal-content">
     <button className="qb-close" onClick={() => { if(typeof window !== "undefined" && window.qbClose) { window.qbClose() } } } aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
     </button>
 
     <div className="qb-header">
-      <div className="qb-eyebrow" data-en="Quick Brief" data-ar="نموذج سريع">Quick Brief</div>
-      <div className="qb-title" id="qbTitle" data-en="Tell me about your project" data-ar="احكيلي عن مشروعك">Tell me about your project</div>
-      <div className="qb-sub" data-en="Takes 30 seconds — and helps me prepare for our chat." data-ar="٣٠ ثانية بس — وبتساعدني أجهز للحوار.">Takes 30 seconds — and helps me prepare for our chat.</div>
+      <div className="qb-eyebrow" data-en={quickBrief.eyebrow} data-ar={quickBrief.eyebrowAr}>{quickBrief.eyebrow}</div>
+      <div className="qb-title" id="qbTitle" data-en={quickBrief.title} data-ar={quickBrief.titleAr}>{quickBrief.title}</div>
+      <div className="qb-sub" data-en={quickBrief.subtitle} data-ar={quickBrief.subtitleAr}>{quickBrief.subtitle}</div>
     </div>
 
     <div className="qb-progress">
@@ -1008,8 +1088,8 @@ export default function ClientPage({
 
     {/* STEP 1: Name */}
     <div className="qb-step active" data-step="1">
-      <div className="qb-step-label" data-en="What's your name?" data-ar="اسمك إيه؟">What's your name?</div>
-      <input type="text" className="qb-input" id="qbName" placeholder="Your name" data-en-placeholder="Your name" data-ar-placeholder="اسمك" />
+      <div className="qb-step-label" data-en={quickBrief.nameLabel} data-ar={quickBrief.nameLabelAr}>{quickBrief.nameLabel}</div>
+      <input type="text" className="qb-input" id="qbName" placeholder={quickBrief.namePlaceholder} data-en-placeholder={quickBrief.namePlaceholder} data-ar-placeholder={quickBrief.namePlaceholderAr} />
       <div className="qb-actions">
         <button className="qb-btn qb-btn-primary" onClick={() => { if(typeof window !== "undefined" && window.qbNext) { window.qbNext() } } }>
           <span data-en="Next" data-ar="التالي">Next</span>
@@ -1020,26 +1100,14 @@ export default function ClientPage({
 
     {/* STEP 2: Project Type */}
     <div className="qb-step" data-step="2">
-      <div className="qb-step-label" data-en="What kind of project?" data-ar="نوع المشروع؟">What kind of project?</div>
+      <div className="qb-step-label" data-en={quickBrief.projectTypeLabel} data-ar={quickBrief.projectTypeLabelAr}>{quickBrief.projectTypeLabel}</div>
       <div className="qb-options">
-        <button className="qb-option" data-field="projectType" data-value="Video Editing">
-          <span className="qb-option-icon">🎬</span><span data-en="Video Editing" data-ar="مونتاج فيديو">Video Editing</span>
-        </button>
-        <button className="qb-option" data-field="projectType" data-value="Cinematography">
-          <span className="qb-option-icon">📷</span><span data-en="Cinematography" data-ar="تصوير سينمائي">Cinematography</span>
-        </button>
-        <button className="qb-option" data-field="projectType" data-value="Brand Content">
-          <span className="qb-option-icon">✨</span><span data-en="Brand Content" data-ar="محتوى براند">Brand Content</span>
-        </button>
-        <button className="qb-option" data-field="projectType" data-value="Documentary">
-          <span className="qb-option-icon">🎞️</span><span data-en="Documentary" data-ar="فيلم وثائقي">Documentary</span>
-        </button>
-        <button className="qb-option" data-field="projectType" data-value="Social Media">
-          <span className="qb-option-icon">📱</span><span data-en="Social Media" data-ar="سوشيال ميديا">Social Media</span>
-        </button>
-        <button className="qb-option" data-field="projectType" data-value="Other">
-          <span className="qb-option-icon">💡</span><span data-en="Something else" data-ar="حاجة تانية">Something else</span>
-        </button>
+        {quickBrief.projectTypes.map((option, idx) => (
+          <button key={`${option.label}-${idx}`} className="qb-option" data-field="projectType" data-value={getQuickBriefOptionValue(option)}>
+            {option.icon && <span className="qb-option-icon">{option.icon}</span>}
+            <span data-en={option.label} data-ar={option.labelAr || option.label}>{option.label}</span>
+          </button>
+        ))}
       </div>
       <div className="qb-actions">
         <button className="qb-btn qb-btn-ghost" onClick={() => { if(typeof window !== "undefined" && window.qbPrev) { window.qbPrev() } } }>
@@ -1054,27 +1122,14 @@ export default function ClientPage({
 
     {/* STEP 3: Budget */}
     <div className="qb-step" data-step="3">
-      <div className="qb-step-label" data-en="Budget range?" data-ar="الميزانية التقريبية؟">Budget range?</div>
-      <div className="qb-step-helper" data-en="Helps me suggest the right scope. Honest answers help us both." data-ar="بيساعدني أقترح حاجة مناسبة. الصراحة بتفيدنا الاتنين.">Helps me suggest the right scope. Honest answers help us both.</div>
+      <div className="qb-step-label" data-en={quickBrief.budgetLabel} data-ar={quickBrief.budgetLabelAr}>{quickBrief.budgetLabel}</div>
+      <div className="qb-step-helper" data-en={quickBrief.budgetHelper} data-ar={quickBrief.budgetHelperAr}>{quickBrief.budgetHelper}</div>
       <div className="qb-options">
-        <button className="qb-option" data-field="budget" data-value="Under $500">
-          <span data-en="Under $500" data-ar="أقل من $500">Under $500</span>
-        </button>
-        <button className="qb-option" data-field="budget" data-value="$500 - $2K">
-          <span data-en="$500 — $2K" data-ar="$500 — $2K">$500 — $2K</span>
-        </button>
-        <button className="qb-option" data-field="budget" data-value="$2K - $5K">
-          <span data-en="$2K — $5K" data-ar="$2K — $5K">$2K — $5K</span>
-        </button>
-        <button className="qb-option" data-field="budget" data-value="$5K+">
-          <span data-en="$5K and up" data-ar="$5K وأكثر">$5K and up</span>
-        </button>
-        <button className="qb-option" data-field="budget" data-value="Not sure yet">
-          <span data-en="Not sure yet" data-ar="مش متأكد لسه">Not sure yet</span>
-        </button>
-        <button className="qb-option" data-field="budget" data-value="Flexible">
-          <span data-en="Let's discuss" data-ar="نتفاهم">Let's discuss</span>
-        </button>
+        {quickBrief.budgets.map((option, idx) => (
+          <button key={`${option.label}-${idx}`} className="qb-option" data-field="budget" data-value={getQuickBriefOptionValue(option)}>
+            <span data-en={option.label} data-ar={option.labelAr || option.label}>{option.label}</span>
+          </button>
+        ))}
       </div>
       <div className="qb-actions">
         <button className="qb-btn qb-btn-ghost" onClick={() => { if(typeof window !== "undefined" && window.qbPrev) { window.qbPrev() } } }>
@@ -1089,23 +1144,17 @@ export default function ClientPage({
 
     {/* STEP 4: Timeline + Optional details */}
     <div className="qb-step" data-step="4">
-      <div className="qb-step-label" data-en="When do you need it?" data-ar="إمتى محتاجه؟">When do you need it?</div>
+      <div className="qb-step-label" data-en={quickBrief.timelineLabel} data-ar={quickBrief.timelineLabelAr}>{quickBrief.timelineLabel}</div>
       <div className="qb-options" style={{ marginBottom: '24px' }}>
-        <button className="qb-option" data-field="timeline" data-value="ASAP (this week)">
-          <span className="qb-option-icon">⚡</span><span data-en="ASAP" data-ar="حالاً">ASAP</span>
-        </button>
-        <button className="qb-option" data-field="timeline" data-value="This month">
-          <span className="qb-option-icon">📅</span><span data-en="This month" data-ar="الشهر ده">This month</span>
-        </button>
-        <button className="qb-option" data-field="timeline" data-value="Next month">
-          <span className="qb-option-icon">📆</span><span data-en="Next month" data-ar="الشهر الجاي">Next month</span>
-        </button>
-        <button className="qb-option" data-field="timeline" data-value="Flexible">
-          <span className="qb-option-icon">🌊</span><span data-en="Flexible" data-ar="مرن">Flexible</span>
-        </button>
+        {quickBrief.timelines.map((option, idx) => (
+          <button key={`${option.label}-${idx}`} className="qb-option" data-field="timeline" data-value={getQuickBriefOptionValue(option)}>
+            {option.icon && <span className="qb-option-icon">{option.icon}</span>}
+            <span data-en={option.label} data-ar={option.labelAr || option.label}>{option.label}</span>
+          </button>
+        ))}
       </div>
-      <div className="qb-step-label" data-en="Anything else? (optional)" data-ar="أي حاجة تانية؟ (اختياري)">Anything else? (optional)</div>
-      <textarea className="qb-input qb-textarea" id="qbDetails" placeholder="Brief description, references, links..." data-en-placeholder="Brief description, references, links..." data-ar-placeholder="وصف سريع، مراجع، روابط..."></textarea>
+      <div className="qb-step-label" data-en={quickBrief.detailsLabel} data-ar={quickBrief.detailsLabelAr}>{quickBrief.detailsLabel}</div>
+      <textarea className="qb-input qb-textarea" id="qbDetails" placeholder={quickBrief.detailsPlaceholder} data-en-placeholder={quickBrief.detailsPlaceholder} data-ar-placeholder={quickBrief.detailsPlaceholderAr}></textarea>
       <div className="qb-actions">
         <button className="qb-btn qb-btn-ghost" onClick={() => { if(typeof window !== "undefined" && window.qbPrev) { window.qbPrev() } } }>
           <span data-en="Back" data-ar="رجوع">Back</span>
@@ -1119,9 +1168,9 @@ export default function ClientPage({
 
     {/* STEP 5: Choose channel */}
     <div className="qb-step" data-step="5">
-      <div className="qb-step-label" data-en="How should we connect?" data-ar="نتواصل إزاي؟">How should we connect?</div>
+      <div className="qb-step-label" data-en={quickBrief.connectLabel} data-ar={quickBrief.connectLabelAr}>{quickBrief.connectLabel}</div>
       <div className="qb-summary">
-        <div className="qb-summary-title" data-en="Your brief" data-ar="ملخص">Your brief</div>
+        <div className="qb-summary-title" data-en={quickBrief.summaryTitle} data-ar={quickBrief.summaryTitleAr}>{quickBrief.summaryTitle}</div>
         <div id="qbSummaryItems"></div>
       </div>
       <div className="qb-channels">
@@ -1141,32 +1190,10 @@ export default function ClientPage({
           </div>
           <div className="qb-channel-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></div>
         </button>
-        <button className="qb-channel qb-channel-meeting" onClick={() => { if(typeof window !== "undefined" && window.qbSend) { window.qbSend('meeting') } } }>
-          <div className="qb-channel-icon">📅</div>
-          <div className="qb-channel-text">
-            <div className="qb-channel-title" data-en="Book a discovery call" data-ar="احجز مكالمة استكشاف">Book a discovery call</div>
-            <div className="qb-channel-desc" data-en="Free 30-min session at your convenience" data-ar="جلسة ٣٠ دقيقة مجانية في وقت يناسبك">Free 30-min session at your convenience</div>
-          </div>
-          <div className="qb-channel-arrow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></div>
-        </button>
       </div>
       <div className="qb-actions">
         <button className="qb-btn qb-btn-ghost" onClick={() => { if(typeof window !== "undefined" && window.qbPrev) { window.qbPrev() } } } style={{ flex: 'none', padding: '14px 28px' }}>
           <span data-en="Back" data-ar="رجوع">Back</span>
-        </button>
-      </div>
-    </div>
-
-    {/* STEP 6: Book a Call (Iframe) */}
-    <div className="qb-step" data-step="6">
-      <div className="qb-step-label" data-en="Pick a time that works for you" data-ar="اختار الوقت اللي يناسبك">Pick a time that works for you</div>
-      <div style={{ width: '100%', height: '500px', borderRadius: '12px', overflow: 'hidden', background: '#fff', marginBottom: '24px' }}>
-         {/* Fallback to simple iframe or placeholder for now, since /book is empty */}
-         <iframe src="/book" style={{ width: '100%', height: '100%', border: 'none' }}></iframe>
-      </div>
-      <div className="qb-actions">
-        <button className="qb-btn qb-btn-ghost" onClick={() => { if(typeof window !== "undefined" && window.qbClose) { window.qbClose() } } } style={{ flex: 'none', padding: '14px 28px', width: '100%' }}>
-          <span data-en="Close" data-ar="إغلاق">Close</span>
         </button>
       </div>
     </div>

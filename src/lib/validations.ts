@@ -91,41 +91,6 @@ export const FaqSchema = z.object({
   active: z.coerce.boolean().default(true),
 });
 
-export const EventTypeSchema = z.object({
-  title: z.string().min(1),
-  slug: z.string().min(1).regex(/^[a-z0-9-]+$/),
-  description: z.string().optional(),
-  durationMinutes: z.coerce.number().min(5).max(480),
-  price: z.string().default('0'),
-  color: z.string().default('#5fa3e0'),
-  isActive: z.coerce.boolean().default(true),
-  bufferBefore: z.coerce.number().min(0).default(0),
-  bufferAfter: z.coerce.number().min(0).default(0),
-  maxPerDay: z.coerce.number().optional().nullable(),
-  startTimeIncrement: z.coerce.number().min(5).default(30),
-  timezoneDisplay: z.enum(['auto', 'locked']).default('auto'),
-  lockedTimezone: z.string().optional(),
-  allowGuests: z.coerce.boolean().default(false),
-  minNoticeHours: z.coerce.number().min(0).default(4),
-  maxFutureDays: z.coerce.number().min(1).default(60),
-  emailReminderHours: z.coerce.number().optional().nullable(),
-  emailFollowupHours: z.coerce.number().optional().nullable(),
-  confirmationRedirect: z.string().url().optional().or(z.literal('')),
-});
-
-export const BookingSubmitSchema = z.object({
-  event_type_id: z.string().uuid(),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  time: z.string().regex(/^\d{2}:\d{2}$/),
-  duration_minutes: z.coerce.number().min(5).max(480),
-  first_name: z.string().min(1),
-  last_name: z.string().min(1),
-  email: z.string().email(),
-  notes: z.string().optional(),
-  communication_method: z.string().optional(),
-  guests: z.string().optional(),
-});
-
 export const ContactSubmitSchema = z.object({
   name: z.string().min(1),
   email: z.string().email().optional().or(z.literal('')),

@@ -23,18 +23,6 @@ async function runTests() {
     assert(Array.isArray(works), 'Works should return an array');
     console.log(`✅ PASS (${works.length} works found)`);
 
-    // 4. Test Event Types Query
-    process.stdout.write('Testing Event Types query... ');
-    const eventTypes = await q.eventTypes.all();
-    assert(Array.isArray(eventTypes), 'Event Types should return an array');
-    console.log(`✅ PASS (${eventTypes.length} event types found)`);
-
-    // 5. Test Availability Query
-    process.stdout.write('Testing Availability query... ');
-    const availability = await q.availability.all();
-    assert(Array.isArray(availability), 'Availability should return an array');
-    console.log(`✅ PASS (${availability.length} availability rules found)`);
-
     console.log('\n🎉 All backend queries passed successfully!');
     process.exit(0);
   } catch (error) {

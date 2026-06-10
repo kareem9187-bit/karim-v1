@@ -77,9 +77,9 @@ export default function WorkDetailsClient({ work }: { work: any }) {
 
         {/* Next Steps */}
         <div className="cinematic-fade-up text-center" style={{ marginTop: '6rem' }}>
-          <a href="/#work" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '1rem 2rem', background: 'rgba(255,255,255,0.05)', borderRadius: '100px', color: '#fff', textDecoration: 'none', transition: 'all 0.3s ease', border: '1px solid rgba(255,255,255,0.1)' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'} onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}>
+          <a href="/#portfolio" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '1rem 2rem', background: 'rgba(255,255,255,0.05)', borderRadius: '100px', color: '#fff', textDecoration: 'none', transition: 'all 0.3s ease', border: '1px solid rgba(255,255,255,0.1)' }} onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'} onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            <span style={{ fontSize: '1.1rem', fontWeight: 500 }}>Back to Work</span>
+            <span style={{ fontSize: '1.1rem', fontWeight: 500 }}>Back to Portfolio</span>
           </a>
         </div>
       </div>

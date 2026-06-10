@@ -306,13 +306,11 @@ const modalWorks = document.getElementById('modalWorks');
 document.querySelectorAll('.svc-card').forEach(card => {
   card.addEventListener('click', () => {
     const key = card.dataset.service;
+    const serviceId = card.dataset.serviceId;
+    const serviceTitleFromCard = card.dataset.serviceTitle || '';
 
       // Read dynamic works from DB (injected via client-page.tsx)
       const allWorks = window.__WORKS_DATA__ || [];
-      // map category or service keys if needed, but for now we fallback to the old structure
-      // Wait, in custom_script.js, `serviceWorks` uses keys like 'editing', 'cinematography'.
-      // The DB has `category` or `serviceId`.
-      // Let's filter works that belong to this service.
       const serviceTitleMap = {
         'editing': 'Video Editing',
         'cinematography': 'Cinematography',
@@ -321,9 +319,19 @@ document.querySelectorAll('.svc-card').forEach(card => {
         'mentorship': 'Training & Mentorship',
         'motion': 'Motion & Graphics'
       };
-      const serviceTitle = serviceTitleMap[key] || '';
+      const serviceTitle = serviceTitleFromCard || serviceTitleMap[key] || '';
+      const normalize = (value) => String(value || '').trim().toLowerCase();
 
-      const dbWorks = allWorks.filter(w => w.title === serviceTitle || w.category === serviceTitle || w.serviceId === key);
+      const dbWorks = allWorks.filter(w => {
+        if (serviceId && w.serviceId === serviceId) return true;
+        const category = normalize(w.category);
+        const title = normalize(w.title);
+        const selectedTitle = normalize(serviceTitle);
+        const selectedKey = normalize(key);
+        return Boolean(
+          selectedTitle && (category === selectedTitle || title === selectedTitle || category.includes(selectedTitle))
+        ) || Boolean(selectedKey && category.includes(selectedKey));
+      });
 
       let data = serviceWorks[key];
       if (dbWorks && dbWorks.length > 0) {
@@ -863,7 +871,7 @@ window.enterSite = function(){
         portfolioSection.classList.add('visible');
         document.body.classList.add('in-portfolio');
 
-        const targetPage = validPages.includes(hash) ? hash : 'home';
+        const targetPage = hash === 'work' ? 'services' : (validPages.includes(hash) ? hash : 'home');
         // Wait for spaGo to be defined
         const tryActivate = () => {
           if(typeof window.spaGo === 'function'){
@@ -879,6 +887,7 @@ window.enterSite = function(){
 
 // ═══════════ SPA MULTI-PAGE NAVIGATION ═══════════
 window.spaGo = function(page, skipScroll){
+  if(page === 'work') page = 'services';
   // Hide all pages
   document.querySelectorAll('section[data-page]').forEach(s => {
     s.classList.remove('spa-active');
@@ -920,8 +929,9 @@ window.addEventListener('DOMContentLoaded', function(){
   // If hash exists and welcome is hidden, navigate
   const hash = window.location.hash.replace('#','');
   const validPages = ['home','about','services','training','contact'];
-  if(validPages.includes(hash) && document.body.classList.contains('in-portfolio')){
-    spaGo(hash, true);
+  const targetPage = hash === 'work' ? 'services' : hash;
+  if(validPages.includes(targetPage) && document.body.classList.contains('in-portfolio')){
+    spaGo(targetPage, true);
   }
 });
 
@@ -929,8 +939,9 @@ window.addEventListener('DOMContentLoaded', function(){
 window.addEventListener('hashchange', function(){
   const hash = window.location.hash.replace('#','');
   const validPages = ['home','about','services','training','contact'];
-  if(validPages.includes(hash) && document.body.classList.contains('in-portfolio')){
-    spaGo(hash, true);
+  const targetPage = hash === 'work' ? 'services' : hash;
+  if(validPages.includes(targetPage) && document.body.classList.contains('in-portfolio')){
+    spaGo(targetPage, true);
   }
 });
 
@@ -1139,18 +1150,16 @@ window.addEventListener('hashchange', function(){
 
 
 (function(){
-  // === CONFIGURATION (edit these) ===
-  const QB_WHATSAPP_NUMBER = '201234567890'; // Replace with real number (country code, no +)
-  const QB_EMAIL_TO = 'hello@karimabdelaziz.com'; // Replace with real email
-  const QB_CALENDAR_URL = ''; // Replace with Calendly URL when ready, leave empty for fallback
-
   // === STATE ===
   const qbData = { name: '', projectType: '', budget: '', timeline: '', details: '' };
   let qbCurrentStep = 1;
-  const TOTAL_STEPS = 6;
+  const TOTAL_STEPS = 5;
 
   // === ELEMENTS ===
   const modal = document.getElementById('qbModal');
+  if(!modal) return;
+  const QB_WHATSAPP_NUMBER = String(modal.dataset.whatsapp || '201234567890').replace(/\D/g, '');
+  const QB_EMAIL_TO = modal.dataset.email || 'hello@karimabdelaziz.com';
   const nameInput = document.getElementById('qbName');
   const detailsInput = document.getElementById('qbDetails');
 
@@ -1223,7 +1232,7 @@ window.addEventListener('hashchange', function(){
   });
 
   // Input listeners
-  nameInput.addEventListener('input', updateButtons);
+  if(nameInput) nameInput.addEventListener('input', updateButtons);
 
   function updateButtons(){
     const step2Btn = document.getElementById('qbStep2Next');
@@ -1265,17 +1274,12 @@ window.addEventListener('hashchange', function(){
     if(channel === 'whatsapp'){
       const url = `https://wa.me/${QB_WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
       window.open(url, '_blank');
-      // show success step
-      showSuccessStep();
+      qbClose();
     } else if(channel === 'email'){
       const subject = encodeURIComponent(`Project Inquiry: ${qbData.projectType}`);
       const body = encodeURIComponent(msg);
       window.location.href = `mailto:${QB_EMAIL_TO}?subject=${subject}&body=${body}`;
-      // show success step
-      showSuccessStep();
-    } else if(channel === 'meeting'){
-      // Redirect to /book internally
-      window.location.href = '/book';
+      qbClose();
     }
   };
 
@@ -1301,12 +1305,9 @@ Looking forward to chatting!`;
     });
   });
 
-  // Auto-wire common CTAs (Book a Free Call, Start your project, etc.)
+  // Auto-wire common project CTAs.
   // Match by text content
   const triggerTexts = [
-    'Book a Free Discovery Call',
-    'Book a free call',
-    "احجز مكالمة مجانية",
     'Start your project',
     'ابدأ مشروعك',
     'Start Your Project',

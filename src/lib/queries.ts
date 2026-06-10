@@ -3,10 +3,9 @@ import {
   hero, welcomeChapters, stats, brands, services, works,
   testimonials, trainingInfo, trainingStats, storyChapters,
   countries, faqs, socialLinks, contactInfo, siteSettings,
-  media, contactSubmissions, eventTypes, availability,
-  availabilityOverrides, bookings, settings,
+  media, contactSubmissions,
 } from '@/db/schema';
-import { eq, and, gte, lt } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { asc, desc } from '@/lib/db-order';
 
 // ═══ SITE ═══
@@ -165,116 +164,4 @@ export const q = {
         .orderBy(desc(contactSubmissions.createdAt)),
   },
 
-  // ═══ BOOKING ═══
-
-  eventTypes: {
-    active: () =>
-      db.select().from(eventTypes)
-        .where(eq(eventTypes.isActive, true))
-        .orderBy(asc(eventTypes.createdAt)),
-    all: () =>
-      db.select().from(eventTypes).orderBy(asc(eventTypes.createdAt)),
-    bySlug: (slug: string) =>
-      db.select().from(eventTypes)
-        .where(eq(eventTypes.slug, slug))
-        .limit(1)
-        .then((r: any[]) => r[0] ?? null),
-    byId: (id: string) =>
-      db.select().from(eventTypes)
-        .where(eq(eventTypes.id, id))
-        .limit(1)
-        .then((r: any[]) => r[0] ?? null),
-  },
-
-  availability: {
-    all: () =>
-      db.select().from(availability).orderBy(asc(availability.dayOfWeek)),
-    byDay: (dayOfWeek: number) =>
-      db.select().from(availability).where(eq(availability.dayOfWeek, dayOfWeek)),
-  },
-
-  availabilityOverrides: {
-    all: () =>
-      db.select().from(availabilityOverrides).orderBy(asc(availabilityOverrides.date)),
-    byDate: (date: string) =>
-      db.select().from(availabilityOverrides)
-        .where(eq(availabilityOverrides.date, date))
-        .limit(1)
-        .then((r: any[]) => r[0] ?? null),
-  },
-
-  bookings: {
-    all: () =>
-      db.select({
-        id: bookings.id,
-        bookingDate: bookings.bookingDate,
-        startTime: bookings.startTime,
-        endTime: bookings.endTime,
-        clientName: bookings.clientName,
-        clientEmail: bookings.clientEmail,
-        paymentStatus: bookings.paymentStatus,
-        meetingLink: bookings.meetingLink,
-        createdAt: bookings.createdAt,
-        eventTypeId: bookings.eventTypeId,
-        eventTitle: eventTypes.title,
-      })
-      .from(bookings)
-      .leftJoin(eventTypes, eq(bookings.eventTypeId, eventTypes.id))
-      .orderBy(desc(bookings.bookingDate)),
-
-    upcoming: () => {
-      const today = new Date().toISOString().split('T')[0];
-      return db.select({
-        id: bookings.id,
-        bookingDate: bookings.bookingDate,
-        startTime: bookings.startTime,
-        endTime: bookings.endTime,
-        clientName: bookings.clientName,
-        clientEmail: bookings.clientEmail,
-        paymentStatus: bookings.paymentStatus,
-        meetingLink: bookings.meetingLink,
-        eventTitle: eventTypes.title,
-      })
-      .from(bookings)
-      .leftJoin(eventTypes, eq(bookings.eventTypeId, eventTypes.id))
-      .where(gte(bookings.bookingDate, today))
-      .orderBy(asc(bookings.bookingDate), asc(bookings.startTime));
-    },
-
-    past: () => {
-      const today = new Date().toISOString().split('T')[0];
-      return db.select({
-        id: bookings.id,
-        bookingDate: bookings.bookingDate,
-        startTime: bookings.startTime,
-        endTime: bookings.endTime,
-        clientName: bookings.clientName,
-        clientEmail: bookings.clientEmail,
-        paymentStatus: bookings.paymentStatus,
-        meetingLink: bookings.meetingLink,
-        eventTitle: eventTypes.title,
-      })
-      .from(bookings)
-      .leftJoin(eventTypes, eq(bookings.eventTypeId, eventTypes.id))
-      .where(lt(bookings.bookingDate, today))
-      .orderBy(desc(bookings.bookingDate));
-    },
-
-    byDate: (date: string) =>
-      db.select().from(bookings).where(eq(bookings.bookingDate, date)),
-  },
-
-  bookingProfile: async () => {
-    const [row] = await db.select().from(settings)
-      .where(eq(settings.key, 'booking_profile')).limit(1);
-    return row?.value ?? {
-      name: 'Karim Abdelaziz',
-      welcome_message: 'Film director & video editor based in Cairo.',
-      avatar_url: '/images/avatar.jpg',
-      language: 'en',
-      timezone: 'Africa/Cairo',
-      date_format: 'MMM d, yyyy',
-      time_format: '12h',
-    };
-  },
 };

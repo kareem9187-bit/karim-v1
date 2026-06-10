@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react';
 import { createOverlayState } from '@/lib/overlay-state';
 import { Button, Card, Input, Modal, Switch, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, TextArea } from '@heroui/react';
 import toast from 'react-hot-toast';
-import { deleteSocialLink, getAllSocialLinks, getContactInfo, updateContactInfo, upsertSocialLink } from './actions';
+import { quickBriefOptionsToText, type QuickBriefConfig } from '@/lib/quick-brief';
+import { deleteSocialLink, getAllSocialLinks, getContactInfo, getQuickBriefConfig, updateContactInfo, updateQuickBriefConfig, upsertSocialLink } from './actions';
 
 export default function ContactAdminPage() {
   const [contact, setContact] = useState<any>({});
+  const [quickBrief, setQuickBrief] = useState<QuickBriefConfig | null>(null);
   const [socials, setSocials] = useState<any[]>([]);
   const [editingSocial, setEditingSocial] = useState<any | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -16,9 +18,10 @@ export default function ContactAdminPage() {
 
   const loadData = async () => {
     setIsLoading(true);
-    const [contactData, socialData] = await Promise.all([getContactInfo(), getAllSocialLinks()]);
+    const [contactData, socialData, quickBriefData] = await Promise.all([getContactInfo(), getAllSocialLinks(), getQuickBriefConfig()]);
     setContact(contactData || {});
     setSocials(socialData || []);
+    setQuickBrief(quickBriefData);
     setIsLoading(false);
   };
 
@@ -48,6 +51,17 @@ export default function ContactAdminPage() {
       loadData();
     } else {
       toast.error('Failed to save social link');
+    }
+  };
+
+  const handleQuickBriefSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const res = await updateQuickBriefConfig(new FormData(e.currentTarget));
+    if (res.success) {
+      toast.success('Quick Brief settings saved');
+      loadData();
+    } else {
+      toast.error('Failed to save Quick Brief settings');
     }
   };
 
@@ -100,6 +114,73 @@ export default function ContactAdminPage() {
           <Button type="submit" className="bg-blue-600 px-8">Save Contact Info</Button>
         </div>
       </form>
+
+      {quickBrief && (
+        <form onSubmit={handleQuickBriefSubmit} className="mb-10" key={JSON.stringify(quickBrief)}>
+          <Card>
+            <Card.Header className="border-b border-white/5 bg-[#050505]/50 px-6 py-4">
+              <div>
+                <h2 className="text-xl font-semibold">Quick Brief Modal</h2>
+                <p className="text-sm text-gray-400 mt-1">Control modal copy, field labels, placeholders, and option lists.</p>
+              </div>
+            </Card.Header>
+            <Card.Content className="p-6 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Field label="Eyebrow" name="eyebrow" value={quickBrief.eyebrow} />
+                <Field label="Eyebrow Arabic" name="eyebrowAr" value={quickBrief.eyebrowAr} rtl />
+                <Field label="Title" name="title" value={quickBrief.title} />
+                <Field label="Title Arabic" name="titleAr" value={quickBrief.titleAr} rtl />
+                <TextField label="Subtitle" name="subtitle" value={quickBrief.subtitle} />
+                <TextField label="Subtitle Arabic" name="subtitleAr" value={quickBrief.subtitleAr} rtl />
+                <Field label="Name label" name="nameLabel" value={quickBrief.nameLabel} />
+                <Field label="Name label Arabic" name="nameLabelAr" value={quickBrief.nameLabelAr} rtl />
+                <Field label="Name placeholder" name="namePlaceholder" value={quickBrief.namePlaceholder} />
+                <Field label="Name placeholder Arabic" name="namePlaceholderAr" value={quickBrief.namePlaceholderAr} rtl />
+                <Field label="Project type label" name="projectTypeLabel" value={quickBrief.projectTypeLabel} />
+                <Field label="Project type label Arabic" name="projectTypeLabelAr" value={quickBrief.projectTypeLabelAr} rtl />
+                <Field label="Budget label" name="budgetLabel" value={quickBrief.budgetLabel} />
+                <Field label="Budget label Arabic" name="budgetLabelAr" value={quickBrief.budgetLabelAr} rtl />
+                <TextField label="Budget helper" name="budgetHelper" value={quickBrief.budgetHelper} />
+                <TextField label="Budget helper Arabic" name="budgetHelperAr" value={quickBrief.budgetHelperAr} rtl />
+                <Field label="Timeline label" name="timelineLabel" value={quickBrief.timelineLabel} />
+                <Field label="Timeline label Arabic" name="timelineLabelAr" value={quickBrief.timelineLabelAr} rtl />
+                <Field label="Details label" name="detailsLabel" value={quickBrief.detailsLabel} />
+                <Field label="Details label Arabic" name="detailsLabelAr" value={quickBrief.detailsLabelAr} rtl />
+                <Field label="Details placeholder" name="detailsPlaceholder" value={quickBrief.detailsPlaceholder} />
+                <Field label="Details placeholder Arabic" name="detailsPlaceholderAr" value={quickBrief.detailsPlaceholderAr} rtl />
+                <Field label="Connect label" name="connectLabel" value={quickBrief.connectLabel} />
+                <Field label="Connect label Arabic" name="connectLabelAr" value={quickBrief.connectLabelAr} rtl />
+                <Field label="Summary title" name="summaryTitle" value={quickBrief.summaryTitle} />
+                <Field label="Summary title Arabic" name="summaryTitleAr" value={quickBrief.summaryTitleAr} rtl />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <OptionsField
+                  label="Project type options"
+                  name="projectTypes"
+                  value={quickBriefOptionsToText(quickBrief.projectTypes, true)}
+                  hint="Format: Label | Arabic label | Value | Icon"
+                />
+                <OptionsField
+                  label="Budget options"
+                  name="budgets"
+                  value={quickBriefOptionsToText(quickBrief.budgets, false)}
+                  hint="Format: Label | Arabic label | Value"
+                />
+                <OptionsField
+                  label="Timeline options"
+                  name="timelines"
+                  value={quickBriefOptionsToText(quickBrief.timelines, true)}
+                  hint="Format: Label | Arabic label | Value | Icon"
+                />
+              </div>
+            </Card.Content>
+          </Card>
+          <div className="flex justify-end">
+            <Button type="submit" className="bg-blue-600 px-8">Save Quick Brief</Button>
+          </div>
+        </form>
+      )}
 
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold">Social Links</h2>
@@ -188,6 +269,34 @@ export default function ContactAdminPage() {
           )}
         </Modal.Dialog>
       </Modal>
+    </div>
+  );
+}
+
+function Field({ label, name, value, rtl = false }: { label: string; name: string; value: string; rtl?: boolean }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
+      <Input name={name} defaultValue={value || ''} dir={rtl ? 'rtl' : 'ltr'} variant="secondary" />
+    </div>
+  );
+}
+
+function TextField({ label, name, value, rtl = false }: { label: string; name: string; value: string; rtl?: boolean }) {
+  return (
+    <div className="md:col-span-2">
+      <label className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
+      <TextArea name={name} defaultValue={value || ''} rows={3} dir={rtl ? 'rtl' : 'ltr'} variant="secondary" />
+    </div>
+  );
+}
+
+function OptionsField({ label, name, value, hint }: { label: string; name: string; value: string; hint: string }) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
+      <TextArea name={name} defaultValue={value} rows={8} variant="secondary" />
+      <p className="text-xs text-gray-500 mt-2">{hint}</p>
     </div>
   );
 }
