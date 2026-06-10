@@ -64,7 +64,7 @@ export default function AdminSidebar() {
       {/* Mobile Toggle */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed top-4 right-4 z-[60] p-2 bg-[#111] rounded-lg border border-white/10 text-white"
+        className="md:hidden fixed top-4 left-4 z-[60] p-2 bg-[#111] rounded-lg border border-white/10 text-white"
       >
         {isOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
@@ -78,8 +78,8 @@ export default function AdminSidebar() {
       )}
 
       <aside className={clsx(
-        "w-[260px] border-r border-white/5 bg-[#050505] fixed inset-y-0 start-0 z-50 flex flex-col transition-transform duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        "w-[260px] border-l border-white/5 bg-[#050505] fixed inset-y-0 end-0 z-50 flex flex-col transition-transform duration-300 ease-in-out",
+        isOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
       )}>
         {/* Logo */}
       <div className="h-[72px] flex items-center px-6 border-b border-white/5">
