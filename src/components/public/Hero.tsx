@@ -22,7 +22,7 @@ export function Hero({ data }: { data: HeroData | null }) {
       <div className="absolute inset-0 z-[1] overflow-hidden bg-[#04060a]">
         {data.image && (
           <div
-            className="absolute top-0 right-0 w-[65%] h-full bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${data.image})` }}
           />
         )}
