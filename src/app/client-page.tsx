@@ -3,6 +3,7 @@
 import { SpaNavbar } from '@/components/public/SpaNavbar';
 import { getQuickBriefOptionValue, normalizeQuickBriefConfig } from '@/lib/quick-brief';
 import { useEffect } from 'react';
+import WorldMap from '@/components/public/WorldMap';
 
 const getServiceIcon = (icon: string) => {
   switch (icon) {
@@ -649,64 +650,7 @@ export default function ClientPage({
         <div className="ws-item"><span className="ws-num"><span className="count" data-target="470" data-suffix="+">0</span></span><span className="ws-lbl" data-en="Clients" data-ar="عميل">Clients</span></div>
       </div>
 
-      <div className="map-frame">
-        <div className="map-wrap">
-          <div id="map-container">
-<div className="map-loading" id="mapLoading">
-  <div className="map-loading-spinner"></div>
-  <div className="map-loading-text" data-en="Loading world map..." data-ar="جاري تحميل الخريطة...">Loading world map...</div>
-</div>
-<svg id="world-svg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%', display: 'block', overflow: 'visible' }}>
-  <defs>
-    <radialGradient id="bgGrad" cx="50%" cy="50%" r="60%">
-      <stop offset="0%" stopColor="#1a3a6e" stopOpacity="0.5"/>
-      <stop offset="50%" stopColor="#0a1830" stopOpacity="0.25"/>
-      <stop offset="100%" stopColor="#020812" stopOpacity="0"/>
-    </radialGradient>
-    <radialGradient id="haloGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stopColor="#ffffff" stopOpacity="1"/>
-      <stop offset="20%" stopColor="#ffffff" stopOpacity="0.6"/>
-      <stop offset="55%" stopColor="#7fc4ff" stopOpacity="0.2"/>
-      <stop offset="100%" stopColor="#7fc4ff" stopOpacity="0"/>
-    </radialGradient>
-    <radialGradient id="homeHaloGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stopColor="#ffffff" stopOpacity="1"/>
-      <stop offset="15%" stopColor="#ffffff" stopOpacity="0.85"/>
-      <stop offset="50%" stopColor="#aedcff" stopOpacity="0.4"/>
-      <stop offset="100%" stopColor="#aedcff" stopOpacity="0"/>
-    </radialGradient>
-    <filter id="lineGlow" x="-100%" y="-100%" width="300%" height="300%">
-      <feGaussianBlur stdDeviation="1.2" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="continentGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="0.6" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(127,196,255,0.06)" strokeWidth={0.5}/>
-    </pattern>
-  </defs>
-  <rect width="1000" height="500" fill="url(#gridPattern)"/>
-  <rect width="1000" height="500" fill="url(#bgGrad)"/>
-  <g id="continents-paths"></g>
-  <g id="glows"></g>
-  <g id="lines"></g>
-  <g id="markers" style={{ pointerEvents: 'auto' }}></g>
-</svg>
-</div>
-        </div>
-        <div className="map-countries">
-          {(countriesData || []).map((country: any, idx: number) => (
-            <span
-              key={country.id || idx}
-              className={`ctry ${country.isHome ? 'home' : ''}`}
-            >
-              {country.flag} <span data-en={country.name} data-ar={country.nameAr}>{country.name}</span>
-            </span>
-          ))}
-        </div>
-      </div>
+      <WorldMap />
     </div>
   </div>
 </section>
