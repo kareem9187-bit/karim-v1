@@ -32,8 +32,8 @@ export default function WorldMap() {
 
     async function buildWorldMap() {
       if (!svg) return;
-      if (svg.dataset.built === '1') return;
-      svg.dataset.built = '1';
+      // In Strict Mode, we want to allow rebuilding if isMounted is true
+      // So we don't rely heavily on dataset.built here, or we clear it on unmount
 
       try {
         const world = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r => r.json());
